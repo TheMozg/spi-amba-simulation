@@ -6,7 +6,7 @@ SYSTEMC_URL := http://www.accellera.org/images/downloads/standards/systemc/$(SYS
 SYSTEMC_DIR := $(BUILD_SYSTEMC_DIR)/install
 
 CXX         := g++
-CXXFLAGS    := -g -Wall -Wextra -I$(SYSTEMC_DIR)/include -pthread
+CXXFLAGS    := -std=c++98 -g -Wall -Wextra -I$(SYSTEMC_DIR)/include -pthread
 SRC_DIR     := src
 TARGET      := $(BUILD_DIR)/hello
 SOURCES     := $(wildcard $(SRC_DIR)/*.cpp) $(SYSTEMC_DIR)/lib-linux64/libsystemc.a
