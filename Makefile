@@ -38,7 +38,13 @@ $(BUILD_DIR) $(BUILD_SYSTEMC_DIR):
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
+	rm *.vcd
 
 .PHONY: clean-systemc
 clean-systemc:
 	rm -rf $(BUILD_SYSTEMC_DIR)
+
+.PHONY: run
+run: $(TARGET)
+	$(TARGET)
+
