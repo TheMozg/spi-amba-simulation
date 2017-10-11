@@ -2,7 +2,7 @@
 #include "spi.h"
 #include "test_spi.h"
 
-#define TRACE_FILE "spi"
+#define TRACE_FILE "spi_systemc"
 
 int sc_main ( int argc, char** argv ) {
   
