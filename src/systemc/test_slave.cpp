@@ -50,11 +50,11 @@ SC_MODULE( test_slave ) {
     }
     wait( );
 
-    rst.write( 1 );
+ //   rst.write( 1 );
 
     wait( );
 
-    rst.write( 0 );
+ //   rst.write( 0 );
 
     for ( int i = 0; i < 3; ++i ) {
       wait( );

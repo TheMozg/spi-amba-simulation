@@ -6,7 +6,7 @@
 
 int sc_main ( int argc, char** argv ) {
   
-  //Main clock
+  // Main clock
   sc_clock clock ("ID", 10, SC_NS, 0.5, 10, SC_NS, true);
 
   // Test SPI slave ports

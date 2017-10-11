@@ -20,7 +20,7 @@ SC_MODULE( spi ) {
   bool toggle_enable;
 
   void rx( ) {
-    data_out.write( data_out.read( ) | ( miso.read() << ctr.read() ) );
+    data_out.write( data_out.read( ) | ( miso.read() << ctr.read() - 1 ) );
   }
 
   void tx( ) {
@@ -36,6 +36,7 @@ SC_MODULE( spi ) {
     ctr.write( 0 );
     tmp = 0;
     toggle_enable = 0;
+    mosi.write( 0 );
   }
 
   void state( ) {
