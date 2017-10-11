@@ -1,17 +1,13 @@
 #include "systemc.h"
-#include "spi.cpp"
-#include "test_slave.cpp"
+#include "spi.h"
+#include "test_spi.h"
 
 #define TRACE_FILE "spi"
 
 int sc_main ( int argc, char** argv ) {
   
   // Main clock
-  sc_clock clock ("ID", 10, SC_NS, 0.5, 10, SC_NS, true);
-
-  // Test SPI slave ports
-  sc_signal<bool> s_clk;
-  sc_signal<bool> s_enable;
+  sc_clock clock ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
 
   // SPI ports
   sc_signal<bool> miso;
@@ -40,21 +36,15 @@ int sc_main ( int argc, char** argv ) {
 
     spi_m.ctr( ctr );
 
-  test_slave spi_s( "SPI_SLAVE" );
-    spi_s.clk( s_clk );
-    spi_s.miso( miso );
-    spi_s.mosi( mosi );
-    spi_s.rst( rst );
-    spi_s.enable( enable );
-    spi_s.ss( ss );
+  test_spi spi_t( "SPI_SLAVE" );
+    spi_t.clk( sclk );
+    spi_t.miso( miso );
+    spi_t.mosi( mosi );
+    spi_t.rst( rst );
+    spi_t.enable( enable );
+    spi_t.ss( ss );
 
-    spi_s.data_in( data_in );
-
-  clock_gen clk_gen( "CLK_GEN" );
-    clk_gen.clock( clock );
-    clk_gen.enable( s_enable );
-    clk_gen.qclk( s_clk );
-
+    spi_t.data_in( data_in );
 
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );

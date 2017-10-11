@@ -1,93 +1,75 @@
-// SPI mode 0
+// SPI, mode 0, only master mode
 
-#include "systemc.h"
-#include "clock.cpp"
+#include "spi.h"
 
-SC_MODULE( spi ) {
-  sc_in<sc_uint<8> > data_in;
-  sc_out<sc_uint<8> > data_out;
+// SPI receive
+void spi::rx( ) {
+  data_out.write( data_out.read( ) | ( miso.read() << ctr.read( ) ) );
+}
 
-  // Counter for transieving
-  sc_out<sc_uint<3> > ctr;
+// SPI transmit
+void spi::tx( ) {
+  mosi.write( data_in.read( )[ ctr.read() ] );
+}
 
-  sc_in<bool> clk, rst, enable, miso;
-  sc_out<bool> sclk, ss, mosi;
+void spi::transieve( ) {
+  rx( ); tx( );
+}
 
-  // SPI clock to generate sclk
-  clock_gen clk_gen;
+// On reset end transaction end reset output data
+void spi::reset( ) {
+  end_transaction( );
+  data_out.write( 0 ); 
+}
 
-  uint8_t tmp;
-  bool toggle_enable;
+/* On transaction end:
+    MOSI -- Low
+    SS -- High
+    Reset counter and enable toggler
+*/
+void spi::end_transaction( ) {
+  ss.write( 1 );
+  ctr.write( 0 );
 
-  void rx( ) {
-    data_out.write( data_out.read( ) | ( miso.read() << ctr.read() - 1 ) );
-  }
+  toggle_enable = 0;
+  mosi.write( 0 );
+}
 
-  void tx( ) {
-    mosi.write( data_in.read( )[ ctr.read() ] );
-  }
+// Main SPI loop
+void spi::loop( ) {
+  ss.write( 1 );
+  ctr.write( 0 );
 
-  void transieve( ) {
-    tx( ); rx( );
-  }
+  // If it is the first bit, do not increase counter ctr
+  bool first = 1;
 
-  void reset( ) {
-    ss.write( 1 );
-    ctr.write( 0 );
-    tmp = 0;
-    toggle_enable = 0;
-    mosi.write( 0 );
-  }
+  // Infinite loop because we are in a thread
+  while( 1 ) {
+    wait( );
 
-  void state( ) {
-    ss.write( 1 );
-    ctr.write( 0 );
-    tmp = ctr.read( );
+    toggle_enable = toggle_enable | enable.read( );
 
-    bool last = 0;
+    // On every sclk tick
+    if( sclk ) {
 
-    while( 1 ) {
-      wait( );
+      if( rst ) {
+        reset( );
+      } else if( toggle_enable ) {
 
-      toggle_enable = toggle_enable | enable.read( );
+        ss.write( 0 );
+        transieve( );
 
-      if( sclk ) {
-        if( rst ) {
-          reset( );
-          data_out.write( 0 ); 
-        } else if( last ) {
-          transieve( );
-          reset( );
-          last = 0;
-        } else if( toggle_enable ) {
-          ss.write( 0 );
-
-          transieve( );
-
-          tmp = ctr.read( );
-          if( !last ) {
-            tmp++;
-            ctr.write( tmp );
-          }
-
-          if( ctr.read() == 7 ) last = 1;
-        } 
-      }
+        if( !first ) {
+          ctr.write( ctr.read( ) + 1 );
+        } else {
+          first = 0;
+        }
+        
+        if( ctr.read( ) == 7 ) end_transaction( );
+      } 
     }
+
   }
 
-  SC_CTOR( spi ):
-    clk( "CLK" ), rst( "RST" ), enable( "ENABLE" ),
-    miso( "MISO" ), sclk( "SCLK" ), ss( "SS" ), mosi( "MOSI" ),
-    clk_gen( "CLK_GEN" ) {
-
-    clk_gen.clock( clk );
-    clk_gen.enable( enable );
-    clk_gen.qclk( sclk );
-
-    SC_THREAD( state );
-    sensitive << sclk.pos();
-    sensitive << rst.pos();
-  };
-};
+}
 
