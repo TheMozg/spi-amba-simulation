@@ -7,8 +7,8 @@ SYSTEMC_DIR := $(BUILD_SYSTEMC_DIR)/install
 
 CXX         := g++
 CXXFLAGS    := -std=c++98 -g -Wall -Wextra -I$(SYSTEMC_DIR)/include -pthread
-SRC_DIR     := src
-TARGET      := $(BUILD_DIR)/hello
+SRC_DIR     := src/systemc
+TARGET      := $(BUILD_DIR)/spi_sim
 SOURCES     := $(wildcard $(SRC_DIR)/*.cpp) $(SYSTEMC_DIR)/lib-linux64/libsystemc.a
 HEADERS     := $(wildcard $(SRC_DIR)/*.h)
 
