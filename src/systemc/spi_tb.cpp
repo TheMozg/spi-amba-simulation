@@ -16,6 +16,7 @@ int sc_main ( int argc, char** argv ) {
   sc_signal<bool> enable;
   sc_signal<bool> ss;
   sc_signal<bool> sclk;
+  sc_signal<bool> busy;
   sc_signal<sc_uint<3> > ctr;
 
   sc_signal<sc_uint<8> > data_in;
@@ -30,6 +31,7 @@ int sc_main ( int argc, char** argv ) {
     spi_m.enable( enable );
     spi_m.ss( ss );
     spi_m.sclk( sclk );
+    spi_m.busy( busy );
 
     spi_m.data_out( data_out );
     spi_m.data_in( data_in );
@@ -59,6 +61,7 @@ int sc_main ( int argc, char** argv ) {
   sc_trace( wf, ss, "ss" );
   sc_trace( wf, sclk, "sclk" );
   sc_trace( wf, ctr, "ctr" );
+  sc_trace( wf, busy, "busy" );
 
   sc_trace( wf, data_in, "data_in" );
   sc_trace( wf, data_out, "data_out" );

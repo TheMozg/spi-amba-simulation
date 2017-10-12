@@ -11,13 +11,16 @@ SC_MODULE( spi ) {
   sc_out<sc_uint<3> > ctr;
 
   sc_in<bool> clk, rst, enable, miso;
-  sc_out<bool> sclk, ss, mosi;
+  sc_out<bool> sclk, ss, mosi, busy;
 
   // SPI clock to generate sclk
   clock_gen clk_gen;
 
   uint8_t tmp;
   bool toggle_enable;
+
+  // Indicate last bit transmission
+  bool last;
 
   void rx( );
   void tx( );

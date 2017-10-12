@@ -9,6 +9,7 @@ SC_MODULE( test_spi ) {
   uint8_t counter;
 
   void demo_send( );
+  void test_send( uint8_t in, uint8_t out, bool reset );
 
   SC_CTOR( test_spi ) {
     SC_THREAD( demo_send );
