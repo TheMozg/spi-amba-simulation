@@ -4,7 +4,7 @@
 
 // SPI receive
 void spi::rx( ) {
-  data_out.write( data_out.read( ) | ( miso.read( ) << ctr.read( ) - 1 ) );
+  data_out.write( data_out.read( ) | ( miso.read( ) << (ctr.read( ) - 1) ) );
   cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr.read( ) << endl;
   cout << "@" << sc_time_stamp( ) << " Data out at curr ctr " << data_out.read( )[ ctr.read( ) ] << endl;
 }
