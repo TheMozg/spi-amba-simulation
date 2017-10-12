@@ -27,7 +27,9 @@ void spi::reset( ) {
 /* On transaction end:
     MOSI -- Low
     SS -- High
-    Reset counter and enable toggler
+    Busy -- Low
+
+    Reset counter, disable toggler and set last bit flag to 0
 */
 void spi::end_transaction( ) {
   ss.write( 1 );
@@ -42,11 +44,9 @@ void spi::end_transaction( ) {
 
 // Main SPI loop
 void spi::loop( ) {
-  ss.write( 1 );
-  ctr.write( 0 );
-
-  last = 0;
-  busy.write( 0 );
+  
+  // Cleanup before transaction
+  end_transaction( );
 
   // Infinite loop because we are in a thread
   while( 1 ) {
