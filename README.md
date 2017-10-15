@@ -1,4 +1,4 @@
-# SystemC sandbox
-`make systemc` to download & build SystemC library.
+# SystemC / Verilog sandbox
+`make thirdparty` to build SystemC and Icarus Verilog.
 
-`make` to build project.
+`make` to build spi.
