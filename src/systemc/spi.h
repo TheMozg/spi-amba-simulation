@@ -10,14 +10,14 @@ SC_MODULE( spi ) {
   // Counter for transieving
   sc_out<sc_uint<3> > ctr;
 
-  sc_in<bool> clk, rst, enable, miso;
+  sc_in<bool> clk, rst, start, miso;
   sc_out<bool> sclk, ss, mosi, busy;
 
   // SPI clock to generate sclk
   clock_gen clk_gen;
 
   uint8_t tmp;
-  bool toggle_enable;
+  bool toggle_start;
 
   // Indicate last bit transmission
   bool last;

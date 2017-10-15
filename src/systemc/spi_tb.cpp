@@ -13,7 +13,7 @@ int sc_main ( int argc, char** argv ) {
   sc_signal<bool> miso;
   sc_signal<bool> mosi;
   sc_signal<bool> rst;
-  sc_signal<bool> enable;
+  sc_signal<bool> start;
   sc_signal<bool> ss;
   sc_signal<bool> sclk;
   sc_signal<bool> busy;
@@ -28,7 +28,7 @@ int sc_main ( int argc, char** argv ) {
     spi_m.miso( miso );
     spi_m.mosi( mosi );
     spi_m.rst( rst );
-    spi_m.enable( enable );
+    spi_m.start( start );
     spi_m.ss( ss );
     spi_m.sclk( sclk );
     spi_m.busy( busy );
@@ -43,7 +43,7 @@ int sc_main ( int argc, char** argv ) {
     spi_t.miso( miso );
     spi_t.mosi( mosi );
     spi_t.rst( rst );
-    spi_t.enable( enable );
+    spi_t.start( start );
     spi_t.ss( ss );
 
     spi_t.data_in( data_in );
@@ -57,7 +57,7 @@ int sc_main ( int argc, char** argv ) {
   sc_trace( wf, miso, "miso" );
   sc_trace( wf, mosi, "mosi" );
   sc_trace( wf, rst, "rst" );
-  sc_trace( wf, enable, "enable" );
+  sc_trace( wf, start, "start" );
   sc_trace( wf, ss, "ss" );
   sc_trace( wf, sclk, "sclk" );
   sc_trace( wf, ctr, "ctr" );

@@ -1,7 +1,7 @@
 #include "systemc.h"
 
 SC_MODULE( test_spi ) {
-  sc_out<bool> miso, rst, enable;
+  sc_out<bool> miso, rst, start;
   sc_in<bool> mosi, clk, ss;
   sc_out<sc_uint<8> > data_in;
 

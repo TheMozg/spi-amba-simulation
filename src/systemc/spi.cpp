@@ -34,10 +34,10 @@ void spi::reset( ) {
 void spi::end_transaction( ) {
   ss.write( 1 );
   ctr.write( 0 );
-  busy.write( 0 );
+  busy = 0;
 
-  toggle_enable = 0;
-  mosi.write( 0 );
+  toggle_start = 0;
+  mosi = 0;
 
   last = 0;
 }
@@ -52,15 +52,14 @@ void spi::loop( ) {
   while( 1 ) {
     wait( );
 
-
     // On every sclk tick
     if( sclk ) {
       
-      toggle_enable = toggle_enable | ( enable.read( ) & !busy.read( ) );
+      toggle_start = toggle_start | ( start.read( ) & !busy.read( ) );
 
       if( rst ) {
         reset( );
-      } else if( toggle_enable ) {
+      } else if( toggle_start ) {
         busy.write( 1 );
         ss.write( 0 );
 
