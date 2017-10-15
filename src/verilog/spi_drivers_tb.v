@@ -63,18 +63,21 @@ module spi_drivers_tb(
         m_data_in = 0;
         s_data_in = 0;
         
-        //
-        
-        #500;
+        #100;
+        $dumpfile ("spi_verilog.vcd"); 
+        $dumpvars;
+
+        #100;
         rst = 0;
         
-        #500;
-        m_data_in = 8'h5A;
-        s_data_in = 8'h69;
+        #100;
         m_start = 1;
         
-        #200;
+        #1000;
         m_start = 0;
+
+        #10000;
+		$finish;
     end
     
 endmodule
