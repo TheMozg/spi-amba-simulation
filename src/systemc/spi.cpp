@@ -1,12 +1,13 @@
 // SPI, mode 0, only master mode, transieve from 0th bit to 7th
 
+// Ports are assigned using write and local vars are assigned using `=` just for readability.
 #include "spi.h"
 
 // SPI receive
 void spi::rx( ) {
   data_out.write( data_out.read( ) | ( miso.read( ) << (ctr.read( ) - 1) ) );
-  cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr.read( ) << endl;
-  cout << "@" << sc_time_stamp( ) << " Data out at curr ctr " << data_out.read( )[ ctr.read( ) ] << endl;
+  //cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr.read( ) << endl;
+  //cout << "@" << sc_time_stamp( ) << " Data out at curr ctr " << data_out.read( )[ ctr.read( ) ] << endl;
 }
 
 // SPI transmit
@@ -34,10 +35,10 @@ void spi::reset( ) {
 void spi::end_transaction( ) {
   ss.write( 1 );
   ctr.write( 0 );
-  busy = 0;
+  busy.write( 0 );
 
   toggle_start = 0;
-  mosi = 0;
+  mosi.write( 0 );
 
   last = 0;
 }
