@@ -1,5 +1,9 @@
 #include "test_spi.h"
 
+void wait_fall( ) {
+  wait( 40, SC_NS );
+}
+
 void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
 
   data_in.write( in );
@@ -10,20 +14,24 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
   wait( );
   rst.write( 0 );
 
-  wait( );
+  wait_fall( );
   start.write( 0 );
 
   msg = out;
+
+  // To make writes on falling edges
+  wait( 20, SC_NS );
+
   for( counter = 0; counter < 8; counter++ ) {
     if( counter == 4 && reset ) {
       rst.write( 1 );
-      wait( );
+      wait_fall( );
       rst.write( 0 );
-      wait( );
+      wait_fall( );
       break;
     }
     miso.write( msg & ( 1 << counter ) );
-    wait( );
+    wait_fall( );
   }
 
   // Low on MISO and few dummy cycles just for pretty graph
@@ -49,3 +57,4 @@ void test_spi::demo_send( ) {
 
   sc_stop( );
 }
+

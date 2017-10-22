@@ -16,15 +16,17 @@ SC_MODULE( spi ) {
   // SPI clock to generate sclk
   clock_gen clk_gen;
 
-  uint8_t tmp;
+  // Flag for transaction start
   bool toggle_start;
+
+  // Flag to indicate transaction ending
+  bool trans_end;
 
   // Indicate last bit transmission
   bool last;
 
   void rx( );
   void tx( );
-  void transieve( );
   void reset( );
   void end_transaction( );
   void loop( );
@@ -37,9 +39,11 @@ SC_MODULE( spi ) {
     clk_gen.clock( clk );
     clk_gen.qclk( sclk );
 
-    SC_THREAD( loop );
-    sensitive << sclk.pos();
-    sensitive << rst.pos();
+    trans_end = 0;
+    toggle_start = 0;
+
+    SC_METHOD( loop );
+    sensitive << sclk;
   }
 };
 

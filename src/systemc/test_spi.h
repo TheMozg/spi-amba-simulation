@@ -15,6 +15,5 @@ SC_MODULE( test_spi ) {
     SC_THREAD( demo_send );
     sensitive << clk.pos( );
   }
-
 };
 

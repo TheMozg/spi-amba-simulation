@@ -6,17 +6,11 @@
 // SPI receive
 void spi::rx( ) {
   data_out.write( data_out.read( ) | ( miso.read( ) << (ctr.read( ) - 1) ) );
-  //cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr.read( ) << endl;
-  //cout << "@" << sc_time_stamp( ) << " Data out at curr ctr " << data_out.read( )[ ctr.read( ) ] << endl;
 }
 
 // SPI transmit
 void spi::tx( ) {
   mosi.write( data_in.read( ) & ( 1 << ctr.read( ) ) );
-}
-
-void spi::transieve( ) {
-  tx( ); rx( );
 }
 
 // On reset end transaction end reset output data
@@ -37,45 +31,44 @@ void spi::end_transaction( ) {
   ctr.write( 0 );
   busy.write( 0 );
 
-  toggle_start = 0;
   mosi.write( 0 );
 
+  toggle_start = 0;
   last = 0;
+  trans_end = 0;
 }
 
 // Main SPI loop
 void spi::loop( ) {
-  
-  // Cleanup before transaction
-  end_transaction( );
 
-  // Infinite loop because we are in a thread
-  while( 1 ) {
-    wait( );
+  toggle_start = toggle_start | ( start.read( ) & !busy.read( ) );
 
-    // On every sclk tick
-    if( sclk ) {
-      
-      toggle_start = toggle_start | ( start.read( ) & !busy.read( ) );
+  if( rst ) {
+    reset( );
+    return;
+  }
 
-      if( rst ) {
-        reset( );
-      } else if( toggle_start ) {
-        busy.write( 1 );
-        ss.write( 0 );
+  if( trans_end ) {
+    end_transaction( );
+    return;
+  }
 
-        transieve( );
-
-        if( !last ) {
-          ctr.write( ctr.read( ) + 1 );
-        } else {
-          end_transaction( );
-        }
-
-        if( ctr.read( ) == 7 ) last = 1;
-      } 
+  // Main logic on every sclk tick
+  if( sclk ) {
+    if( toggle_start && !trans_end ) {
+      rx( );
+      busy.write( 1 );
+      ss.write( 0 );
+    } 
+  } else if( busy ) {
+    tx( );
+    if( !last ) {
+      ctr.write( ctr.read( ) + 1 );
+    } else {
+      trans_end = 1;
+      mosi.write( 0 );
     }
-
+    if( ctr.read( ) == 7 ) last = 1;
   }
 
 }
