@@ -56,7 +56,10 @@ void spi::loop( ) {
       ss.write( 0 );
     } 
 
-    if( last ) ss.write( 1 );
+    if( last ) {
+      ss.write( 1 );
+      busy.write( 0 );
+    } 
 
   } else if( busy ) {
 

@@ -4,7 +4,7 @@
     clk   -- main input clock
     sclk  -- synchronous clock for interaction between SPI modules. 4 times slower than clk.
     rst   -- reset signal, level sensitive
-    busy  -- indicates last mosi/miso edge. Is high for 8.5 cycles.
+    busy  -- indicates transaction in progress. 
     ss    -- slave select. Is low for 8 cycles, set to high on last positive sclk edge of transaction.
     start -- signal to start transaction, level sensitive.
 
