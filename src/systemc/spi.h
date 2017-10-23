@@ -1,4 +1,19 @@
-// SPI, mode 0, only master mode
+/* 
+  SPI module, working in mode 0 (CPOL = 0, CPHA = 0), master only, transieves 8 bits in 8 cycles.
+  Ports:
+    clk   -- main input clock
+    sclk  -- synchronous clock for interaction between SPI modules. 4 times slower than clk.
+    rst   -- reset signal, level sensitive
+    busy  -- indicates last mosi/miso edge. Is high for 8.5 cycles.
+    ss    -- slave select. Is low for 8 cycles, set to high on last positive sclk edge of transaction.
+    start -- signal to start transaction, level sensitive.
+
+    data_in/data_out  -- mosi/miso registers
+    mosi/miso -- master out/master in wires. 
+                 Set to high on falling edge of sclk, 
+                 read happens on falling edge of sclk, 
+                 write to data_in/data_out on rising edge of sclk.
+*/
 
 #include "systemc.h"
 #include "clock.h"
@@ -19,9 +34,6 @@ SC_MODULE( spi ) {
   // Flag for transaction start
   bool toggle_start;
 
-  // Flag to indicate transaction ending
-  bool trans_end;
-
   // Indicate last bit transmission
   bool last;
 
@@ -39,7 +51,6 @@ SC_MODULE( spi ) {
     clk_gen.clock( clk );
     clk_gen.qclk( sclk );
 
-    trans_end = 0;
     toggle_start = 0;
 
     SC_METHOD( loop );

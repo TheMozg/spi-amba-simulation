@@ -35,7 +35,6 @@ void spi::end_transaction( ) {
 
   toggle_start = 0;
   last = 0;
-  trans_end = 0;
 }
 
 // Main SPI loop
@@ -48,27 +47,29 @@ void spi::loop( ) {
     return;
   }
 
-  if( trans_end ) {
-    end_transaction( );
-    return;
-  }
-
   // Main logic on every sclk tick
   if( sclk ) {
-    if( toggle_start && !trans_end ) {
+    if( toggle_start ) {
       rx( );
+
       busy.write( 1 );
       ss.write( 0 );
     } 
+
+    if( last ) ss.write( 1 );
+
   } else if( busy ) {
+
     tx( );
+
     if( !last ) {
       ctr.write( ctr.read( ) + 1 );
     } else {
-      trans_end = 1;
-      mosi.write( 0 );
+      end_transaction( );
     }
+
     if( ctr.read( ) == 7 ) last = 1;
+
   }
 
 }
