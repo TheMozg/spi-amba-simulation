@@ -6,13 +6,13 @@
 module spi_drivers_tb(
     );
     
-    localparam CLK_HALFPERIOD = 50;
+    localparam CLK_HALFPERIOD = 5;
     
     reg         clk, rst;
     
     reg         m_start;
     reg   [7:0] m_data_in;
-    wire        m_ready;
+    wire        m_busy;
     wire  [7:0] m_data_out;
     
     reg   [7:0] s_data_in;
@@ -30,7 +30,7 @@ module spi_drivers_tb(
         
         .start_i(m_start),
         .data_in_bi(m_data_in),
-        .ready_o(m_ready),
+        .busy_o(m_busy),
         .data_out_bo(m_data_out),
         
         .spi_miso_i(spi_miso),
@@ -56,38 +56,32 @@ module spi_drivers_tb(
     always #(CLK_HALFPERIOD) clk = !clk;
     
     initial begin
-        clk = 0;
+        clk = 1;
         rst = 1;
         
-        m_start = 0;
-        m_data_in = 8'b00110101;
-        s_data_in = 8'b01010011;
+        m_start = 1;
+        m_data_in = 8'b10101100;
+        s_data_in = 8'b10100101;
         
-        #500;
+        #50;
         $dumpfile ("spi_verilog.vcd"); 
         $dumpvars;
 
-        #500;
+        #50;
         rst = 0;
-
-        #500;
-        m_start = 1;
         
-        #100;
+        #50;
         m_start = 0;
 
-        #5000;
-        m_data_in = 8'b11111111;
-        s_data_in = 8'b11111111;
+        #250;
         m_start = 1;
-        #100;
+        #50
+        m_data_in = m_data_out;
+        s_data_in = s_data_out;
+        #50;
         m_start = 0;
-        #1500;
-        rst = 1;
-        #100;
-        rst=0;
 
-        #10000;
+        #1000;
 		$finish;
     end
     
