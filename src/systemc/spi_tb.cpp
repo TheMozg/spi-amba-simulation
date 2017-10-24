@@ -60,7 +60,6 @@ int sc_main ( int argc, char** argv ) {
   sc_trace( wf, start, "start" );
   sc_trace( wf, ss, "ss" );
   sc_trace( wf, sclk, "sclk" );
-  sc_trace( wf, ctr, "ctr" );
   sc_trace( wf, busy, "busy" );
 
   sc_trace( wf, data_in, "data_in" );

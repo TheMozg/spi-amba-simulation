@@ -3,10 +3,10 @@
   Ports:
     clk   -- main input clock
     sclk  -- synchronous clock for interaction between SPI modules. 4 times slower than clk.
-    rst   -- reset signal, level sensitive
+    rst   -- reset signal, edge sensitive
     busy  -- indicates transaction in progress. 
     ss    -- slave select. Is low for 8 cycles, set to high on last positive sclk edge of transaction.
-    start -- signal to start transaction, level sensitive.
+    start -- signal to start transaction, edge sensitive.
 
     data_in/data_out  -- mosi/miso registers
     mosi/miso -- master out/master in wires. 
@@ -32,7 +32,7 @@ SC_MODULE( spi ) {
   clock_gen clk_gen;
 
   // Flag for transaction start
-  bool toggle_start;
+  bool trans_start;
 
   // Indicate last bit transmission
   bool last;
@@ -51,10 +51,10 @@ SC_MODULE( spi ) {
     clk_gen.clock( clk );
     clk_gen.qclk( sclk );
 
-    toggle_start = 0;
+    trans_start = 0;
 
     SC_METHOD( loop );
-    sensitive << sclk;
+    sensitive << sclk << rst.pos( ) << start.pos( );
   }
 };
 

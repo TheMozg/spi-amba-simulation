@@ -9,12 +9,14 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
   data_in.write( in );
 
   rst.write( 1 );
-  start.write( 1 );
 
   wait( );
+
+  start.write( 1 );
   rst.write( 0 );
 
   wait_fall( );
+
   start.write( 0 );
 
   msg = out;

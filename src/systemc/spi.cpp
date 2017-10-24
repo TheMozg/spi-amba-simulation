@@ -33,14 +33,14 @@ void spi::end_transaction( ) {
 
   mosi.write( 0 );
 
-  toggle_start = 0;
+  trans_start = 0;
   last = 0;
 }
 
 // Main SPI loop
 void spi::loop( ) {
 
-  toggle_start = toggle_start | ( start.read( ) & !busy.read( ) );
+  trans_start = trans_start | ( start.read( ) & !busy.read( ) );
 
   if( rst ) {
     reset( );
@@ -49,16 +49,11 @@ void spi::loop( ) {
 
   // Main logic on every sclk tick
   if( sclk ) {
-    if( toggle_start ) {
+    if( trans_start ) {
       rx( );
 
       busy.write( 1 );
       ss.write( 0 );
-    } 
-
-    if( last ) {
-      ss.write( 1 );
-      busy.write( 0 );
     } 
 
   } else if( busy ) {
