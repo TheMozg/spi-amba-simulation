@@ -16,12 +16,12 @@ module spi_master_driver(
     // SPI interface
     input             spi_miso_i,
     output reg        spi_mosi_o,
-    output reg        spi_sclk_o,
+    output reg        spi_sclk_o = 0,
     output reg        spi_cs_o
     );
 
     reg   [3:0] counter;
-    reg   clk_div2;
+    reg   clk_div2 = 1;
     reg   mosi_enable;
     reg   [7:0] shiftreg;
     reg         bit_buffer;
@@ -40,9 +40,7 @@ module spi_master_driver(
         end
         clk_div2 <= !clk_div2;
         if (rst_i) begin
-            spi_sclk_o  <= 0;
             counter     <= 0;
-            clk_div2    <= 1;
             shiftreg    <= 0;
             bit_buffer  <= 0;
             data_out_bo <= 0;    

@@ -68,45 +68,41 @@ module spi_drivers_tb(
         $dumpvars;
 
         #20;
+
         rst = 0;
         m_start = 1;
-
         #40;
         m_start = 0;
-
-        #340;
+        #360;
         rst = 1;
         #40;
         rst = 0;
-
         #40;
         m_data_in = 8'b10011001;
         s_data_in = 8'b00101000;
         #80;
         rst = 1;
         #40;
+
         rst = 0;
         m_start = 1;
         #40;
         m_start = 0;
-
-
-        #340;
+        #360;
         rst = 1;
         #40;
         rst = 0;
-
         #40;
         m_data_in = 8'b10011001;
         s_data_in = 8'b00101000;
         #80;
         rst = 1;
         #40;
+
         rst = 0;
         m_start = 1;
         #40;
         m_start = 0;
-
         #180;
         rst = 1;
         #40;
