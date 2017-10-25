@@ -5,18 +5,21 @@
 
 // SPI receive
 void spi::rx( ) {
-  data_out.write( data_out.read( ) | ( miso.read( ) << (ctr.read( ) - 1) ) );
+  shiftreg[7] = miso.read( ); 
+cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr << endl;
 }
 
 // SPI transmit
 void spi::tx( ) {
-  mosi.write( data_in.read( ) & ( 1 << ctr.read( ) ) );
+  mosi.write( shiftreg[0] );
+  shiftreg = shiftreg >> 1;
 }
 
 // On reset end transaction end reset output data
 void spi::reset( ) {
   end_transaction( );
   data_out.write( 0 ); 
+  
 }
 
 /* On transaction end:
@@ -28,13 +31,15 @@ void spi::reset( ) {
 */
 void spi::end_transaction( ) {
   ss.write( 1 );
-  ctr.write( 0 );
+  ctr = 0;
   busy.write( 0 );
 
   mosi.write( 0 );
 
   trans_start = 0;
   last = 0;
+  first = 1;
+  shiftreg = 0;
 }
 
 // Main SPI loop
@@ -47,28 +52,39 @@ void spi::loop( ) {
     return;
   }
 
+  // Assign shiftreg to input packet
+  if( first && sclk && trans_start ) {
+    shiftreg = data_in.read( );
+  }
+
   // Main logic on every sclk tick
   if( sclk ) {
+    data_out.write( shiftreg );
     if( trans_start ) {
+      if( first ) {
+        busy.write( 1 );
+        ss.write( 0 );
+      }
       rx( );
 
-      busy.write( 1 );
-      ss.write( 0 );
     } 
 
   } else if( busy ) {
 
     tx( );
 
-    if( !last ) {
-      ctr.write( ctr.read( ) + 1 );
-    } else {
+    if( !last && !first ) {
+      ctr++;
+    } else if( last ) {
+      rx( );
       end_transaction( );
     }
+    first = 0;
 
-    if( ctr.read( ) == 7 ) last = 1;
+    if( ctr == 7 ) last = 1;
 
   }
+
 
 }
 

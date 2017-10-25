@@ -17,7 +17,6 @@ int sc_main ( int argc, char** argv ) {
   sc_signal<bool> ss;
   sc_signal<bool> sclk;
   sc_signal<bool> busy;
-  sc_signal<sc_uint<3> > ctr;
 
   sc_signal<sc_uint<8> > data_in;
   sc_signal<sc_uint<8> > data_out;
@@ -35,8 +34,6 @@ int sc_main ( int argc, char** argv ) {
 
     spi_m.data_out( data_out );
     spi_m.data_in( data_in );
-
-    spi_m.ctr( ctr );
 
   test_spi spi_t( "SPI_SLAVE" );
     spi_t.clk( sclk );

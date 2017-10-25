@@ -22,8 +22,10 @@ SC_MODULE( spi ) {
   sc_in<sc_uint<8> > data_in;
   sc_out<sc_uint<8> > data_out;
 
-  // Counter for transieving
-  sc_out<sc_uint<3> > ctr;
+  // Shift register
+  sc_uint<8> shiftreg;
+
+  sc_uint<3> ctr;
 
   sc_in<bool> clk, rst, start, miso;
   sc_out<bool> sclk, ss, mosi, busy;
@@ -36,6 +38,9 @@ SC_MODULE( spi ) {
 
   // Indicate last bit transmission
   bool last;
+
+  // Flag indicating first tick of transaction
+  bool first;
 
   void rx( );
   void tx( );

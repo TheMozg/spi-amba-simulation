@@ -11,29 +11,30 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
   rst.write( 1 );
 
   wait( );
-
-  start.write( 1 );
   rst.write( 0 );
+  wait( );
+  
+  start.write( 1 );
 
-  wait_fall( );
+  wait( 20, SC_NS );
 
   start.write( 0 );
 
   msg = out;
 
-  // To make writes on falling edges
-  wait( 20, SC_NS );
-
   for( counter = 0; counter < 8; counter++ ) {
-    if( counter == 4 && reset ) {
+    if( counter >= 4 && reset ) {
       rst.write( 1 );
       wait_fall( );
       rst.write( 0 );
+      miso.write( 0 );
       wait_fall( );
       break;
+    } else {
+      miso.write( msg << 7 & 0xFF );
+      msg = msg >> 1;
+      wait_fall( );
     }
-    miso.write( msg & ( 1 << counter ) );
-    wait_fall( );
   }
 
   // Low on MISO and few dummy cycles just for pretty graph
