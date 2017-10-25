@@ -30,7 +30,7 @@ module spi_master_driver(
     localparam STATE_WAIT_SCLK_0       = 2; // wait for SCLK to become 0
     localparam STATE_NOP_0             = 3; // skip half sclk
     localparam STATE_NOP_1             = 4; // skip half sclk
-
+    localparam STATE_NOP_IDLE          = 5; // skip half sclk
     
     reg   [2:0] state;
     
@@ -63,7 +63,7 @@ module spi_master_driver(
                     shiftreg <= { bit_buffer, shiftreg[7:1] };
                     state <= STATE_NOP_1;
                     if (counter == 7) begin
-                        state <= STATE_IDLE;
+                        state <= STATE_NOP_IDLE;
                         counter <= 0;
                     end else begin
                         counter <= counter + 1;
@@ -74,6 +74,9 @@ module spi_master_driver(
                 end
                 STATE_NOP_0: begin
                     state <= STATE_WAIT_SCLK_0;
+                end
+                STATE_NOP_IDLE: begin
+                    state <= STATE_IDLE;
                 end
                 default: begin
                     state <= STATE_IDLE;
