@@ -65,7 +65,7 @@ module spi_master_driver(
                 end
                 STATE_WAIT_SCLK_0: begin
                     if (spi_sclk_o == 0) begin
-                        shiftreg <= { shiftreg[6:0], bit_buffer };
+                        shiftreg <= { bit_buffer, shiftreg[7:1] };
                         state <= STATE_WAIT_SCLK_1;
                         if (counter == 7) begin
                             mosi_enable <= 0;
@@ -96,7 +96,7 @@ module spi_master_driver(
 
         data_out_bo = shiftreg;
         
-        spi_mosi_o = shiftreg[7] && mosi_enable;
+        spi_mosi_o = shiftreg[0] && mosi_enable;
     end
 
 endmodule

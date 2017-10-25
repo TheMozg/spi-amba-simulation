@@ -24,10 +24,10 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
 
   for( counter = 0; counter < 8; counter++ ) {
     if( counter >= 4 && reset ) {
+      miso.write( 0 );
       rst.write( 1 );
       wait_fall( );
       rst.write( 0 );
-      miso.write( 0 );
       wait_fall( );
       break;
     } else {

@@ -49,7 +49,6 @@ module spi_slave_driver(
                 case (state)
                     STATE_IDLE: begin
                         if (!spi_cs_i) begin
-                            shiftreg <= data_in_bi;
                             miso_enable <= 0;
                             counter     <= 0;
                             state <= STATE_WAIT_SCLK_0_START;
@@ -64,7 +63,7 @@ module spi_slave_driver(
                     end
                     STATE_WAIT_SCLK_0: begin
                         if (spi_sclk_i == 0) begin
-                            shiftreg <= { shiftreg[6:0], bit_buffer };
+                            shiftreg <= { bit_buffer, shiftreg[7:1] };
                             miso_enable <= 1;
                             state <= STATE_WAIT_SCLK_1;
                             if (counter == 7)
@@ -74,6 +73,7 @@ module spi_slave_driver(
                     end
                     STATE_WAIT_SCLK_0_START: begin
                         if (spi_sclk_i == 0) begin
+                            shiftreg <= data_in_bi;
                             miso_enable <= 1;
                             state <= STATE_WAIT_SCLK_1;
                         end
@@ -90,7 +90,7 @@ module spi_slave_driver(
         ready_o = (state == STATE_IDLE);
         data_out_bo = shiftreg;
         
-        spi_miso_o = shiftreg[7] && miso_enable && !spi_cs_i;
+        spi_miso_o = shiftreg[0] && miso_enable && !spi_cs_i;
     end
     
 endmodule
