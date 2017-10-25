@@ -60,8 +60,8 @@ module spi_drivers_tb(
         rst = 1;
         
         m_start = 1;
-        m_data_in = 8'b10101100;
-        s_data_in = 8'b10100101;
+        m_data_in = 8'b00110101;
+        s_data_in = 8'b10100011;
         
         #50;
         $dumpfile ("spi_verilog.vcd"); 

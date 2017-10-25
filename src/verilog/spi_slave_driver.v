@@ -27,7 +27,7 @@ module spi_slave_driver(
 
     reg   [2:0] state;
     
-    always @(posedge rst_i, posedge spi_sclk_i, negedge spi_sclk_i, posedge clk_i, negedge spi_cs_i) begin
+    always @(posedge spi_sclk_i, negedge spi_sclk_i, posedge clk_i, negedge spi_cs_i) begin
         if (rst_i == 1) begin
             shiftreg <= 0;
             bit_buffer <= 0;
@@ -57,7 +57,7 @@ module spi_slave_driver(
                     end
                     STATE_WAIT_SCLK_0: begin
                         if (spi_sclk_i == 0) begin
-                            shiftreg <= { shiftreg[6:0], bit_buffer };
+                            shiftreg <= { bit_buffer, shiftreg[7:1] };
                             state <= STATE_WAIT_SCLK_1;
                         end
                     end
@@ -73,7 +73,7 @@ module spi_slave_driver(
         ready_o = (state == STATE_IDLE);
         data_out_bo = shiftreg;
         
-        spi_miso_o = shiftreg[7] && !spi_cs_i;
+        spi_miso_o = shiftreg[0] && !spi_cs_i;
     end
     
 endmodule

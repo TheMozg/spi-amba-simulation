@@ -60,7 +60,7 @@ module spi_master_driver(
                 end
                 STATE_WAIT_SCLK_0: begin
                     clk_div4 <= 0;
-                    shiftreg <= { shiftreg[6:0], bit_buffer };
+                    shiftreg <= { bit_buffer, shiftreg[7:1] };
                     state <= STATE_NOP_1;
                     if (counter == 7) begin
                         state <= STATE_IDLE;
@@ -83,11 +83,11 @@ module spi_master_driver(
     end
         
     always @* begin
-        busy_o      <= (state != STATE_IDLE);
-        spi_cs_o    <= (state == STATE_IDLE);
-        data_out_bo <= shiftreg;
-        spi_sclk_o  <= clk_div4 && !spi_cs_o;
-        spi_mosi_o  <= shiftreg[7] && !spi_cs_o;
+        busy_o      = (state != STATE_IDLE);
+        spi_cs_o    = (state == STATE_IDLE);
+        data_out_bo = shiftreg;
+        spi_sclk_o  = clk_div4 && !spi_cs_o;
+        spi_mosi_o  = shiftreg[0] && !spi_cs_o;
     end
 
 endmodule
