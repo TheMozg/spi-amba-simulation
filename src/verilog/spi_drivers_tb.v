@@ -58,28 +58,63 @@ module spi_drivers_tb(
     initial begin
         clk = 1;
         rst = 1;
-        
-        m_start = 1;
+        m_start = 0;
+
         m_data_in = 8'b10101100;
-        s_data_in = 8'b10100101;
+        s_data_in = 8'b01100101;
         
-        #50;
+        #20;
         $dumpfile ("spi_verilog.vcd"); 
         $dumpvars;
 
-        #50;
+        #20;
         rst = 0;
-        
-        #50;
+        m_start = 1;
+
+        #40;
         m_start = 0;
 
-        #350;
-        m_data_in = m_data_out;
-        s_data_in = s_data_out;
-        #40
+        #340;
+        rst = 1;
+        #40;
+        rst = 0;
+
+        #40;
+        m_data_in = 8'b10011001;
+        s_data_in = 8'b00101000;
+        #80;
+        rst = 1;
+        #40;
+        rst = 0;
         m_start = 1;
-        #50;
+        #40;
         m_start = 0;
+
+
+        #340;
+        rst = 1;
+        #40;
+        rst = 0;
+
+        #40;
+        m_data_in = 8'b10011001;
+        s_data_in = 8'b00101000;
+        #80;
+        rst = 1;
+        #40;
+        rst = 0;
+        m_start = 1;
+        #40;
+        m_start = 0;
+
+        #180;
+        rst = 1;
+        #40;
+        rst = 0;
+        #60;
+        rst = 1;
+        #40;
+        rst = 0;
 
         #1000;
 		$finish;
