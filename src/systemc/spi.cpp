@@ -5,14 +5,14 @@
 
 // SPI receive
 void spi::rx( ) {
-  shiftreg[7] = miso.read( ); 
-cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr << endl;
+  //shiftreg[7] = miso.read( ); 
+  buf = miso.read( );
+//cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr << endl;
 }
 
 // SPI transmit
 void spi::tx( ) {
   mosi.write( shiftreg[0] );
-  shiftreg = shiftreg >> 1;
 }
 
 // On reset end transaction end reset output data
@@ -39,7 +39,6 @@ void spi::end_transaction( ) {
   trans_start = 0;
   last = 0;
   first = 1;
-  shiftreg = 0;
 }
 
 // Main SPI loop
@@ -59,30 +58,38 @@ void spi::loop( ) {
 
   // Main logic on every sclk tick
   if( sclk ) {
-    data_out.write( shiftreg );
     if( trans_start ) {
       if( first ) {
+        data_out.write( shiftreg );
         busy.write( 1 );
         ss.write( 0 );
       }
       rx( );
-
     } 
 
   } else if( busy ) {
+
+
+    if( !first ) {
+      shiftreg = shiftreg >> 1; 
+      shiftreg[7] = buf;
+    }
 
     tx( );
 
     if( !last && !first ) {
       ctr++;
+      
     } else if( last ) {
       rx( );
       end_transaction( );
     }
+
     first = 0;
 
     if( ctr == 7 ) last = 1;
 
+    data_out.write( shiftreg );
   }
 
 

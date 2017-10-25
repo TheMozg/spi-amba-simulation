@@ -42,6 +42,8 @@ SC_MODULE( spi ) {
   // Flag indicating first tick of transaction
   bool first;
 
+  bool buf;
+
   void rx( );
   void tx( );
   void reset( );

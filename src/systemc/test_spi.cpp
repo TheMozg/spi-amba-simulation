@@ -37,8 +37,7 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
     }
   }
 
-  // Low on MISO and few dummy cycles just for pretty graph
-  miso.write( 0 );
+  wait( );
   wait( );
 
   // Reset data_out
