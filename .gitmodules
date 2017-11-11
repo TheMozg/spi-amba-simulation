@@ -1,6 +1,3 @@
 [submodule "systemc"]
 	path = thirdparty/systemc
 	url = git@github.com:TheMozg/SystemC.git
-[submodule "verilog"]
-	path = thirdparty/verilog
-	url = https://github.com/steveicarus/iverilog.git
