@@ -4,15 +4,18 @@
 #include "spi.h"
 
 // SPI receive
-void spi::rx( ) {
-  //shiftreg[7] = miso.read( ); 
-  buf = miso.read( );
-//cout << "@" << sc_time_stamp( ) << " Receive miso/ctr: " << miso.read( ) << "/" << ctr << endl;
+void spi::rx_capture( ) {
+  reg_buf = miso.read( );
 }
 
+void spi::rx_write( ) {
+  data_out.write( shift_reg );
+}
 // SPI transmit
 void spi::tx( ) {
-  mosi.write( shiftreg[0] );
+  mosi.write( shift_reg[0] );
+  shift_reg = shift_reg >> 1;
+  shift_reg[7] = reg_buf;
 }
 
 // On reset end transaction end reset output data
@@ -22,76 +25,66 @@ void spi::reset( ) {
   
 }
 
-/* On transaction end:
-    MOSI -- Low
-    SS -- High
-    Busy -- Low
-
-    Reset counter, disable toggler and set last bit flag to 0
-*/
+// End transaction routine
 void spi::end_transaction( ) {
   ss.write( 1 );
-  ctr = 0;
+  tr_ctr = 0;
   busy.write( 0 );
-
   mosi.write( 0 );
 
-  trans_start = 0;
-  last = 0;
-  first = 1;
+  fsm_state = STATE_IDLE;
 }
 
 // Main SPI loop
 void spi::loop( ) {
-
-  trans_start = trans_start | ( start.read( ) & !busy.read( ) );
 
   if( rst ) {
     reset( );
     return;
   }
 
-  // Assign shiftreg to input packet
-  if( first && sclk && trans_start ) {
-    shiftreg = data_in.read( );
-  }
-
-  // Main logic on every sclk tick
-  if( sclk ) {
-    if( trans_start ) {
-      if( first ) {
-        data_out.write( shiftreg );
+  switch( fsm_state ) {
+    
+    case STATE_IDLE:
+      if( start ) {
         busy.write( 1 );
         ss.write( 0 );
+
+        shift_reg = data_in.read( );
+
+        tx( );
+
+        fsm_state = STATE_WAIT_SCLK_1;
       }
-      rx( );
-    } 
+      break;
 
-  } else if( busy ) {
+    case STATE_WAIT_SCLK_0:
+      if( !sclk ) {
 
+        tr_ctr++;
 
-    if( !first ) {
-      shiftreg = shiftreg >> 1; 
-      shiftreg[7] = buf;
-    }
+        tx( );
 
-    tx( );
+        rx_write( );
+        
+        fsm_state = ( tr_ctr == 8 ) ? STATE_FINAL : STATE_WAIT_SCLK_1;
+      }
+      break;
 
-    if( !last && !first ) {
-      ctr++;
-      
-    } else if( last ) {
-      rx( );
+    case STATE_WAIT_SCLK_1:
+      if( sclk ) {
+
+        rx_capture( );
+
+        fsm_state = STATE_WAIT_SCLK_0;
+      }
+      break;
+
+    case STATE_FINAL:
+    default:
       end_transaction( );
-    }
-
-    first = 0;
-
-    if( ctr == 7 ) last = 1;
-
-    data_out.write( shiftreg );
-  }
-
+      break;
+  } 
 
 }
 

@@ -19,49 +19,57 @@
 #include "clock.h"
 
 SC_MODULE( spi ) {
+  // SPI wires
+  sc_in<bool> clk, rst, start, miso;
+  sc_out<bool> sclk, ss, mosi, busy;
+
+  // Shift register
+  sc_uint<8> shift_reg;
+
+  // Outputs for shift_reg
   sc_in<sc_uint<8> > data_in;
   sc_out<sc_uint<8> > data_out;
 
-  // Shift register
-  sc_uint<8> shiftreg;
-
-  sc_uint<3> ctr;
-
-  sc_in<bool> clk, rst, start, miso;
-  sc_out<bool> sclk, ss, mosi, busy;
+  // Transaction counter
+  sc_uint<4> tr_ctr;
 
   // SPI clock to generate sclk
   clock_gen clk_gen;
 
-  // Flag for transaction start
-  bool trans_start;
+  // Buffer register
+  bool reg_buf;
 
-  // Indicate last bit transmission
-  bool last;
+  sc_uint<2> fsm_state;
 
-  // Flag indicating first tick of transaction
-  bool first;
-
-  bool buf;
-
-  void rx( );
+  void rx_capture( );
+  void rx_write( );
   void tx( );
   void reset( );
   void end_transaction( );
   void loop( );
+
+  enum {
+    STATE_IDLE,
+    STATE_WAIT_SCLK_1,
+    STATE_WAIT_SCLK_0,
+    STATE_FINAL 
+  };
 
   SC_CTOR( spi ):
   clk( "CLK" ), rst( "RST" ), miso( "MISO" ), sclk( "SCLK" ), 
   ss( "SS" ), mosi( "MOSI" ), clk_gen( "CLK_GEN" ) {
 
     // Clock generator for sclk
+    clk_gen.enable( busy );
     clk_gen.clock( clk );
     clk_gen.qclk( sclk );
 
-    trans_start = 0;
-
     SC_METHOD( loop );
-    sensitive << sclk << rst.pos( ) << start.pos( );
+    sensitive << clk.pos( ) 
+              << rst.pos( ) 
+              << start.pos( ) 
+              << sclk.pos( ) 
+              << sclk.neg( );
   }
 };
 

@@ -35,8 +35,9 @@ int sc_main ( int argc, char** argv ) {
     spi_m.data_out( data_out );
     spi_m.data_in( data_in );
 
+
   test_spi spi_t( "SPI_SLAVE" );
-    spi_t.clk( sclk );
+    spi_t.clk( clock );
     spi_t.miso( miso );
     spi_t.mosi( mosi );
     spi_t.rst( rst );

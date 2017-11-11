@@ -1,5 +1,7 @@
 #include "test_spi.h"
 
+// Cruedly made test bench
+
 void wait_fall( ) {
   wait( 40, SC_NS );
 }
@@ -16,10 +18,6 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
   
   start.write( 1 );
 
-  wait( 20, SC_NS );
-
-  start.write( 0 );
-
   msg = out;
 
   for( counter = 0; counter < 8; counter++ ) {
@@ -35,15 +33,10 @@ void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
       msg = msg >> 1;
       wait_fall( );
     }
+    start.write( 0 );
   }
 
-  wait( );
-  wait( );
-
-  // Reset data_out
-  rst.write( 1 );
-  wait( );
-  rst.write( 0 );
+  wait_fall( );
 
   for ( int i = 0; i < 3; ++i ) {
     wait( );
