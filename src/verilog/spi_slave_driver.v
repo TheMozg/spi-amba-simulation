@@ -9,7 +9,6 @@ module spi_slave_driver(
     
     // system interface
     input      [7:0] data_in_bi,  // data that master can read from slave
-    output reg       ready_o,     // transaction is not processed now 
     output reg [7:0] data_out_bo, // data written to slave in last transaction
     
     // SPI iterface
@@ -70,7 +69,6 @@ module spi_slave_driver(
     end
         
     always @* begin
-        ready_o = (state == STATE_IDLE);
         data_out_bo = shiftreg;
         
         spi_miso_o = shiftreg[0] && !spi_cs_i;

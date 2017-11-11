@@ -16,7 +16,6 @@ module spi_drivers_tb(
     wire  [7:0] m_data_out;
     
     reg   [7:0] s_data_in;
-    wire        s_ready;
     wire  [7:0] s_data_out;
     
     wire        spi_miso;
@@ -44,7 +43,6 @@ module spi_drivers_tb(
         .rst_i(rst),
         
         .data_in_bi(s_data_in),
-        .ready_o(s_ready),
         .data_out_bo(s_data_out),
         
         .spi_miso_o(spi_miso),
