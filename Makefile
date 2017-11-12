@@ -4,14 +4,14 @@ SYSTEMC_THD_SRC_DIR := thirdparty/systemc
 SYSTEMC_THD_BLD_DIR := $(BUILD_DIR)/$(SYSTEMC_THD_SRC_DIR)-build
 SYSTEMC_THD_INS_DIR := $(BUILD_DIR)/$(SYSTEMC_THD_SRC_DIR)-install
 
-CXX                 := g++
-CXXFLAGS            := -std=c++98 -g -Wall -Wextra -I$(SYSTEMC_THD_INS_DIR)/include -pthread
-
-SYSTEMC_SRC_DIR     := src
+SYSTEMC_SRC_DIR     := src src/clock src/spi
 SYSTEMC_SPI_EXE     := $(BUILD_DIR)/spi_systemc
 SYSTEMC_SPI_VCD     := $(BUILD_DIR)/spi_systemc.vcd
-SYSTEMC_SOURCES     := $(wildcard $(SYSTEMC_SRC_DIR)/*.cpp) $(SYSTEMC_THD_INS_DIR)/lib-linux64/libsystemc.a
-SYSTEMC_HEADERS     := $(wildcard $(SYSTEMC_SRC_DIR)/*.h)
+SYSTEMC_SOURCES     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.cpp)) $(SYSTEMC_THD_INS_DIR)/lib-linux64/libsystemc.a
+SYSTEMC_HEADERS     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.h))
+
+CXX                 := g++
+CXXFLAGS            := -std=c++98 -g -Wall -Wextra -I$(SYSTEMC_THD_INS_DIR)/include $(foreach dir,$(SYSTEMC_SRC_DIR),-I$(dir)) -pthread
 
 .PHONY: all
 build: systemc
