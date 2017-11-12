@@ -1,3 +1,4 @@
+#pragma once
 /* 
   SPI module, working in mode 0 (CPOL = 0, CPHA = 0), master only, transieves 8 bits in 8 cycles.
   Ports:

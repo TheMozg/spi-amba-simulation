@@ -1,3 +1,5 @@
+#pragma once 
+
 #include "systemc.h"
 
 // Clock generator, receives F, generates F/4
