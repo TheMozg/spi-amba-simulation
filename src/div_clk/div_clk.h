@@ -1,7 +1,7 @@
 #include "systemc.h"
 
 // Clock generator, receives F, generates F/4
-SC_MODULE( clock_gen ) {
+SC_MODULE( div_clk ) {
 
   sc_in_clk     clock;
   sc_out<bool>  qclk; // Quarter of the clock
@@ -10,7 +10,7 @@ SC_MODULE( clock_gen ) {
 
   void tick( );
 
-  SC_CTOR( clock_gen ): 
+  SC_CTOR( div_clk ): 
     qclk( "QCLOCK" ) {
     divider = 0;
     SC_METHOD( tick );

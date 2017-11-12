@@ -16,7 +16,7 @@
 */
 
 #include "systemc.h"
-#include "clock.h"
+#include "div_clk.h"
 
 SC_MODULE( spi ) {
   // SPI wires
@@ -33,8 +33,8 @@ SC_MODULE( spi ) {
   // Transaction counter
   sc_uint<4> tr_ctr;
 
-  // SPI clock to generate sclk
-  clock_gen clk_gen;
+  // SPI clock divider to generate sclk
+  div_clk clk_gen;
 
   // Buffer register
   bool reg_buf;

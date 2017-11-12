@@ -1,6 +1,6 @@
-#include "clock.h"
+#include "div_clk.h"
 
-void clock_gen::tick( ) {
+void div_clk::tick( ) {
   if( enable ) {
     divider++;
     if( divider == 2 ) {
