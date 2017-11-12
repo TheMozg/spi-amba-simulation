@@ -16,7 +16,6 @@ module spi_drivers_tb(
     wire  [7:0] m_data_out;
     
     reg   [7:0] s_data_in;
-    wire        s_ready;
     wire  [7:0] s_data_out;
     
     wire        spi_miso;
@@ -44,7 +43,6 @@ module spi_drivers_tb(
         .rst_i(rst),
         
         .data_in_bi(s_data_in),
-        .ready_o(s_ready),
         .data_out_bo(s_data_out),
         
         .spi_miso_o(spi_miso),
@@ -58,59 +56,28 @@ module spi_drivers_tb(
     initial begin
         clk = 1;
         rst = 1;
-        m_start = 0;
-
-        m_data_in = 8'b00110101;
-        s_data_in = 8'b01010011;
         
-        #20;
+        m_start = 1;
+        m_data_in = 8'b00110101;
+        s_data_in = 8'b10100011;
+        
+        #50;
         $dumpfile ("spi_verilog.vcd"); 
         $dumpvars;
 
-        #20;
-
+        #40;
         rst = 0;
+        
+        #40;
+        m_start = 0;
+
+        #310;
+        m_data_in = m_data_out;
+        s_data_in = s_data_out;
+        #40
         m_start = 1;
         #40;
         m_start = 0;
-        #360;
-        rst = 1;
-        #40;
-        rst = 0;
-        #40;
-        m_data_in = 8'b10011001;
-        s_data_in = 8'b00001010;
-        #80;
-        rst = 1;
-        #40;
-
-        rst = 0;
-        m_start = 1;
-        #40;
-        m_start = 0;
-        #360;
-        rst = 1;
-        #40;
-        rst = 0;
-        #40;
-        m_data_in = 8'b10011001;
-        s_data_in = 8'b00001010;
-        #80;
-        rst = 1;
-        #40;
-
-        rst = 0;
-        m_start = 1;
-        #40;
-        m_start = 0;
-        #180;
-        rst = 1;
-        #40;
-        rst = 0;
-        #60;
-        rst = 1;
-        #40;
-        rst = 0;
 
         #1000;
 		$finish;
