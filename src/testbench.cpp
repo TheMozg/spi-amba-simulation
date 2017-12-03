@@ -31,9 +31,7 @@ void bus_tb( ) {
   sc_signal<bool, SC_MANY_WRITERS > hreset[ dev_cnt ];
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata_buf;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_buf;
 
   // Connect interconnect bus
   bus_amba bus( "BUS_INTER" );
@@ -41,9 +39,7 @@ void bus_tb( ) {
   bus.haddr( haddr );
   bus.hwrite( hwrite );
   bus.hwdata( hwdata );
-  bus.hwdata_buf( hwdata_buf );
   bus.hrdata( hrdata );
-  bus.hrdata_buf( hrdata_buf );
   for( i = 0; i < dev_cnt; i++ ) {
     bus.hsel[i]( hsel[i] );
   }
@@ -55,8 +51,8 @@ void bus_tb( ) {
   bus_t.clk( clk_m );
   bus_t.haddr( haddr ); 
   bus_t.hwrite( hwrite );
-  bus_t.hwdata_buf( hwdata_buf );
-  bus_t.hrdata_buf( hrdata_buf );
+  bus_t.hwdata( hwdata);
+  bus_t.hrdata( hrdata);
   
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
@@ -67,9 +63,7 @@ void bus_tb( ) {
   // Dump AMBA signals
   sc_trace( wf, haddr, "haddr" );
   sc_trace( wf, hwrite, "hwrite" );
-  sc_trace( wf, hwdata_buf, "hwdata_buf" );
   sc_trace( wf, hwdata, "hwdata" );
-  sc_trace( wf, hrdata_buf, "hrdata_buf" );
   sc_trace( wf, hrdata, "hrdata" );
   for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hsel[i], "hsel_" + to_string(i) );

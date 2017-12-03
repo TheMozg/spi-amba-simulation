@@ -4,9 +4,11 @@
 // How many devices are interconnected by AMBA bus
 const char dev_cnt = 3;
 
+// How many bits are for device address and how many for inner address of device
 const char dev_inner_addr_size  = 12;
 const char dev_dev_addr_size    = 20;
 
+// Device memory start address and mask for inner address
 const uint32_t dev_addr_start       = 0x40000000;
 const uint32_t dev_inner_addr_mask  = 0xFFFFFFFF >> dev_dev_addr_size;
 
@@ -25,17 +27,14 @@ struct dev_addr_map_t {
 static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
 SC_MODULE( bus_amba ) {
-  sc_in<bool> hclk;
-  sc_inout<bool> hwrite;
+  sc_in<bool>     hclk;
+  sc_inout<bool>  hwrite;
+  sc_out<bool>    hsel[ dev_cnt ];
+  sc_out<bool>    hreset[ dev_cnt ];
 
   sc_inout<sc_uint<32> >  haddr;
   sc_out<sc_uint<32> >    hwdata;
-  sc_in<sc_uint<32> >     hwdata_buf; // Not sure this is needed
   sc_out<sc_uint<32> >    hrdata;
-  sc_out<sc_uint<32> >    hrdata_buf; // Not sure this is needed
-
-  sc_out<bool> hsel[ dev_cnt ];
-  sc_out<bool> hreset[ dev_cnt ];
 
   enum fsm_state {
     AMBA_IDLE,
@@ -43,9 +42,7 @@ SC_MODULE( bus_amba ) {
     AMBA_READ_DATA,
     AMBA_WRITE_ADR,
     AMBA_WRITE_DATA
-  };
-
-  enum fsm_state bus_state;
+  } bus_state;
 
   SC_CTOR( bus_amba ): hclk( "hclk" ), hwrite( "hwrite" ) {
     init_dev( );

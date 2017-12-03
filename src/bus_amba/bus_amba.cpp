@@ -45,7 +45,6 @@ void bus_amba::amba_write_address( ) {
   //cout << "AMBA WRITE ADDRESS: " << bus_state << endl;
   haddr.write( 0 );
   hwrite.write( 0 );
-  hwdata.write( hwdata_buf.read( ) ); 
 
 }
 
@@ -55,7 +54,7 @@ void bus_amba::amba_read_address( ) {
   //cout << "AMBA READ ADDRESS: " << bus_state << endl;
   haddr.write( 0 );
   hwrite.write( 0 );
-  hrdata.write( hrdata_buf.read( ) );
+  //hrdata.write( hrdata_buf.read( ) );
 
 }
 
