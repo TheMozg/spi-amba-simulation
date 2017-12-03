@@ -1,6 +1,5 @@
 #pragma once
-
-#include "systemc.h"
+#include <systemc.h>
 
 SC_MODULE( test_bus ) {
   sc_in<bool> clk;

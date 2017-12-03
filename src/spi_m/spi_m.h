@@ -19,7 +19,7 @@
 #include "systemc.h"
 #include "div_clk.h"
 
-SC_MODULE( spi ) {
+SC_MODULE( spi_m ) {
   // SPI wires
   sc_in<bool> clk, rst, start, miso;
   sc_out<bool> sclk, ss, mosi, busy;
@@ -50,13 +50,13 @@ SC_MODULE( spi ) {
   void loop( );
 
   enum {
-    STATE_IDLE,
-    STATE_WAIT_SCLK_1,
-    STATE_WAIT_SCLK_0,
-    STATE_FINAL 
+    SPI_M_IDLE,
+    SPI_M_WAIT_SCLK_1,
+    SPI_M_WAIT_SCLK_0,
+    SPI_M_FINAL 
   };
 
-  SC_CTOR( spi ):
+  SC_CTOR( spi_m ):
   clk( "CLK" ), rst( "RST" ), miso( "MISO" ), sclk( "SCLK" ), 
   ss( "SS" ), mosi( "MOSI" ), clk_gen( "CLK_GEN" ) {
 

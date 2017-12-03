@@ -10,20 +10,13 @@ void bus_amba::init_dev( ) {
     devs[i] = dev;
     base = ( ( base >> dev_inner_addr_size ) + 1 ) << dev_inner_addr_size;
     cout << "Registered device " << i << " at " << hex << dev.base << " -- " << dev.end 
-         << " prefix " << dev.prefix << " global inner addr mask " << dev_inner_addr_mask << endl;
+         << " prefix " << dev.prefix << endl;
   } 
 }
 
 // Reset device select lines
 void bus_amba::reset_hsel( ) {
-
-  for( int i = 0; i < dev_cnt; i++ ) {
-    if( hsel[i].read( ) ) {
-      hsel[i].write( 0 );
-      break;
-    }
-  }
-
+  for( int i = 0; i < dev_cnt; i++ ) hsel[i].write( 0 );
 }
 
 // Start read/write transaction from idle state
@@ -54,7 +47,6 @@ void bus_amba::amba_read_address( ) {
   //cout << "AMBA READ ADDRESS: " << bus_state << endl;
   haddr.write( 0 );
   hwrite.write( 0 );
-  //hrdata.write( hrdata_buf.read( ) );
 
 }
 

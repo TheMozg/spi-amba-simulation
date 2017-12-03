@@ -4,7 +4,7 @@
 using namespace std;
 
 #include "systemc.h"
-#include "spi.h"
+#include "spi_m.h"
 #include "bus_amba.h"
 #include "test_bus.h"
 #include "test_spi.h"
@@ -27,8 +27,8 @@ void bus_tb( ) {
 
   // AMBA ports
   sc_signal<bool, SC_MANY_WRITERS> hwrite;
-  sc_signal<bool, SC_MANY_WRITERS > hsel[ dev_cnt ];
-  sc_signal<bool, SC_MANY_WRITERS > hreset[ dev_cnt ];
+  sc_signal<bool, SC_MANY_WRITERS> hsel[ dev_cnt ];
+  sc_signal<bool, SC_MANY_WRITERS> hreset[ dev_cnt ];
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
@@ -96,7 +96,7 @@ void spi_tb( ) {
   sc_signal<sc_uint<8> > data_out;
 
   // Connect the DUT
-  spi spi_m( "SPI_MASTER" );
+  spi_m spi_m( "SPI_MASTER" );
     spi_m.clk( clock );
     spi_m.miso( miso );
     spi_m.mosi( mosi );

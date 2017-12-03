@@ -27,6 +27,7 @@ void test_bus::demo( ) {
   read( 0x40000ACC, 0xDEADBEEF );
   read( 0x40001ACC, 0xADBEEFAA );
   read( 0x40002ACC, 0xEADBEEFD );
+  wait( );
 
   sc_stop( );
 }
