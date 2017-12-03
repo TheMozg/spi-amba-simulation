@@ -9,51 +9,62 @@ void bus_amba::init_dev( ) {
     dev.prefix = base >> dev_inner_addr_size;
     devs[i] = dev;
     base = ( ( base >> dev_inner_addr_size ) + 1 ) << dev_inner_addr_size;
-    cout << "Registered device " << i << " at " << hex << dev.base << " -- " << dev.end 
+    cout << "Registered device " << dec << i << " at " << hex << dev.base << " -- " << dev.end 
          << " prefix " << dev.prefix << endl;
   } 
 }
 
-// Reset device select lines
 void bus_amba::reset_hsel( ) {
   for( int i = 0; i < dev_cnt; i++ ) hsel[i].write( 0 );
 }
 
-// Start read/write transaction from idle state
 void bus_amba::amba_idle( ) {
 
-  //cout << "AMBA IDLE: " << bus_state << endl;
+#ifdef AMBA_DEBUG
+  cout << "AMBA IDLE: " << bus_state << endl;
+#endif
+
   for( int i = 0; i < dev_cnt; i++ ) {
     if( hsel[i].read( ) ) {
-      //cout << "\tAMBA IDLE HSEL_" << i << ": " << bus_state << endl;
+
+#ifdef AMBA_DEBUG
+      cout << "\tAMBA IDLE HSEL_" << i << ": " << bus_state << endl;
+#endif
+
       bus_state = hwrite.read( ) ? AMBA_WRITE_ADR : AMBA_READ_ADR;
     }
   }
 
 }
 
-// Address phase of write transaction
 void bus_amba::amba_write_address( ) {
 
-  //cout << "AMBA WRITE ADDRESS: " << bus_state << endl;
+#ifdef AMBA_DEBUG
+  cout << "AMBA WRITE ADDRESS: " << bus_state << endl;
+#endif
+
   haddr.write( 0 );
   hwrite.write( 0 );
 
 }
 
-// Address phase of read transaction
 void bus_amba::amba_read_address( ) {
 
-  //cout << "AMBA READ ADDRESS: " << bus_state << endl;
+#ifdef AMBA_DEBUG
+  cout << "AMBA READ ADDRESS: " << bus_state << endl;
+#endif
+
   haddr.write( 0 );
   hwrite.write( 0 );
 
 }
 
-// Main transaction loop
 void bus_amba::bus_fsm( ) {
 
-  //cout << "AMBA FSM: " << bus_state << endl;
+#ifdef AMBA_DEBUG
+  cout << "AMBA FSM: " << bus_state << endl;
+#endif
+
   if( bus_state == AMBA_IDLE ) amba_idle( );
 
   switch( bus_state ) {
@@ -82,7 +93,6 @@ void bus_amba::bus_fsm( ) {
   } 
 }
  
-// Select slave device
 void bus_amba::dev_select( ) {
   sc_uint<dev_dev_addr_size> dev_prefix = haddr.read( ) >> dev_inner_addr_size;
 
@@ -90,8 +100,10 @@ void bus_amba::dev_select( ) {
     hsel[i] = ( dev_prefix == devs[i].prefix ) ? 1 : 0;
   }
 
-  //cout << "AMBA DEVSEL: addr: " << hex << haddr.read( ) << endl;
-  //cout << "AMBA DEVSEL: base addr: " << hex << dev_prefix << endl;
+#ifdef AMBA_DEBUG
+  cout << "AMBA DEVSEL: addr: " << hex << haddr.read( ) << endl;
+  cout << "AMBA DEVSEL: base addr: " << hex << dev_prefix << endl;
+#endif
 
 }
 

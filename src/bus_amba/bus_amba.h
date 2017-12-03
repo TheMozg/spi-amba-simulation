@@ -1,6 +1,10 @@
 #pragma once
 #include <systemc.h>
 
+// Debug log macro
+#define AMBA_DEBUG
+#undef AMBA_DEBUG
+
 // How many devices are interconnected by AMBA bus
 const char dev_cnt = 3;
 
@@ -24,9 +28,11 @@ struct dev_addr_map_t {
   uint32_t prefix;  // Device memory prefix (e.g. first 20 bits )
 };
 
+// Devices on the bus
 static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
 SC_MODULE( bus_amba ) {
+  // AMBA ports
   sc_in<bool>     hclk;
   sc_inout<bool>  hwrite;
   sc_out<bool>    hsel[ dev_cnt ];
@@ -36,6 +42,7 @@ SC_MODULE( bus_amba ) {
   sc_out<sc_uint<32> >    hwdata;
   sc_out<sc_uint<32> >    hrdata;
 
+  // Transaction FSM states
   enum fsm_state {
     AMBA_IDLE,
     AMBA_READ_ADR,
@@ -55,14 +62,15 @@ SC_MODULE( bus_amba ) {
     sensitive << haddr;
   }
 
+  // Main transaction loop
   void bus_fsm( );
 
 private:
-  void init_dev( );
-  void dev_select( );
-  void reset_hsel( );
-  void amba_idle( );
-  void amba_write_address( );
-  void amba_read_address( );
+  void init_dev( );   // Register devices on the bus
+  void dev_select( ); // Select slave device
+  void reset_hsel( ); // Reset device select lines
+  void amba_idle( );  // Start read/write transaction from idle state
+  void amba_write_address( ); // Address phase of write transaction
+  void amba_read_address( );  // Address phase of read transaction
 };
 

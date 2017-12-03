@@ -1,0 +1,149 @@
+$date
+     Dec 03, 2017       22:44:25
+$end
+
+$version
+ SystemC 2.3.1-Accellera --- Dec  3 2017 20:06:15
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire    1  aaaaa  clk_m       $end
+$var wire   32  aaaab  haddr [31:0]  $end
+$var wire    1  aaaac  hwrite       $end
+$var wire   32  aaaad  hwdata [31:0]  $end
+$var wire   32  aaaae  hrdata [31:0]  $end
+$var wire    1  aaaaf  hsel_0       $end
+$var wire    1  aaaag  hsel_1       $end
+$var wire    1  aaaah  hsel_2       $end
+$var wire    1  aaaai  hreset_0       $end
+$var wire    1  aaaaj  hreset_1       $end
+$var wire    1  aaaak  hreset_2       $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+0aaaaa
+b0 aaaab
+0aaaac
+b0 aaaad
+b0 aaaae
+0aaaaf
+0aaaag
+0aaaah
+0aaaai
+0aaaaj
+0aaaak
+$end
+
+#10000
+1aaaaa
+b1000000000000000000101011001100 aaaab
+1aaaac
+1aaaaf
+
+#15000
+0aaaaa
+
+#20000
+1aaaaa
+b0 aaaab
+0aaaac
+b11011110101011011011111011101111 aaaad
+0aaaaf
+
+#25000
+0aaaaa
+
+#30000
+1aaaaa
+b1000000000000000001110010101101 aaaab
+1aaaac
+1aaaag
+
+#35000
+0aaaaa
+
+#40000
+1aaaaa
+b0 aaaab
+0aaaac
+b10111110111011111101111010101101 aaaad
+0aaaag
+
+#45000
+0aaaaa
+
+#50000
+1aaaaa
+
+#55000
+0aaaaa
+
+#60000
+1aaaaa
+b1000000000000000000101011001100 aaaab
+1aaaaf
+
+#65000
+0aaaaa
+
+#70000
+1aaaaa
+b0 aaaab
+b11011110101011011011111011101111 aaaae
+0aaaaf
+
+#75000
+0aaaaa
+
+#80000
+1aaaaa
+b1000000000000000001101011001100 aaaab
+1aaaag
+
+#85000
+0aaaaa
+
+#90000
+1aaaaa
+b0 aaaab
+b10101101101111101110111110101010 aaaae
+0aaaag
+
+#95000
+0aaaaa
+
+#100000
+1aaaaa
+b1000000000000000010101011001100 aaaab
+1aaaah
+
+#105000
+0aaaaa
+
+#110000
+1aaaaa
+b0 aaaab
+b11101010110110111110111011111101 aaaae
+0aaaah
+
+#115000
+0aaaaa
+
+#120000
+1aaaaa
+
+#125000
+0aaaaa
+
+#130000
+1aaaaa
+
