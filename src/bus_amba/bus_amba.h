@@ -2,13 +2,13 @@
 #include <systemc.h>
 
 // How many devices are interconnected by AMBA bus
-#define DEV_CNT 3
+const char dev_cnt = 3;
 
-#define DEV_INNER_ADDR_SIZE 12
-#define DEV_DEV_ADDR_SIZE   20
+const char dev_inner_addr_size  = 12;
+const char dev_dev_addr_size    = 20;
 
-#define DEV_ADDR_START      0x40000000
-#define DEV_INNER_ADDR_MASK 0x00000FFF
+const uint32_t dev_addr_start       = 0x40000000;
+const uint32_t dev_inner_addr_mask  = 0xFFFFFFFF >> dev_dev_addr_size;
 
 // Device memory map
 // Registering devices according to DEV* macros
@@ -22,7 +22,7 @@ struct dev_addr_map_t {
   uint32_t prefix;  // Device memory prefix (e.g. first 20 bits )
 };
 
-static dev_addr_map_t *devs = new dev_addr_map_t[DEV_CNT];
+static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
 SC_MODULE( bus_amba ) {
   sc_in<bool> hclk;
@@ -34,8 +34,8 @@ SC_MODULE( bus_amba ) {
   sc_out<sc_uint<32> >    hrdata;
   sc_out<sc_uint<32> >    hrdata_buf; // Not sure this is needed
 
-  sc_out<bool> hsel[ DEV_CNT ];
-  sc_out<bool> hreset[ DEV_CNT ];
+  sc_out<bool> hsel[ dev_cnt ];
+  sc_out<bool> hreset[ dev_cnt ];
 
   enum fsm_state {
     AMBA_IDLE,

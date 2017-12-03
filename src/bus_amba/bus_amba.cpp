@@ -1,23 +1,23 @@
 #include "bus_amba.h"
 
 void bus_amba::init_dev( ) {
-  uint32_t base = DEV_ADDR_START;
-  for( int i = 0; i < DEV_CNT; i++ ) {
+  uint32_t base = dev_addr_start;
+  for( int i = 0; i < dev_cnt; i++ ) {
     dev_addr_map_t dev;
     dev.base = base;
-    dev.end = dev.base | DEV_INNER_ADDR_MASK;
-    dev.prefix = base >> DEV_INNER_ADDR_SIZE;
+    dev.end = dev.base | dev_inner_addr_mask;
+    dev.prefix = base >> dev_inner_addr_size;
     devs[i] = dev;
-    base = ( ( base >> DEV_INNER_ADDR_SIZE ) + 1 ) << DEV_INNER_ADDR_SIZE;
+    base = ( ( base >> dev_inner_addr_size ) + 1 ) << dev_inner_addr_size;
     cout << "Registered device " << i << " at " << hex << dev.base << " -- " << dev.end 
-         << " prefix " << dev.prefix << endl;
+         << " prefix " << dev.prefix << " global inner addr mask " << dev_inner_addr_mask << endl;
   } 
 }
 
 // Reset device select lines
 void bus_amba::reset_hsel( ) {
 
-  for( int i = 0; i < DEV_CNT; i++ ) {
+  for( int i = 0; i < dev_cnt; i++ ) {
     if( hsel[i].read( ) ) {
       hsel[i].write( 0 );
       break;
@@ -30,7 +30,7 @@ void bus_amba::reset_hsel( ) {
 void bus_amba::amba_idle( ) {
 
   //cout << "AMBA IDLE: " << bus_state << endl;
-  for( int i = 0; i < DEV_CNT; i++ ) {
+  for( int i = 0; i < dev_cnt; i++ ) {
     if( hsel[i].read( ) ) {
       //cout << "\tAMBA IDLE HSEL_" << i << ": " << bus_state << endl;
       bus_state = hwrite.read( ) ? AMBA_WRITE_ADR : AMBA_READ_ADR;
@@ -93,9 +93,9 @@ void bus_amba::bus_fsm( ) {
  
 // Select slave device
 void bus_amba::dev_select( ) {
-  sc_uint<DEV_DEV_ADDR_SIZE> dev_prefix = haddr.read( ) >> DEV_INNER_ADDR_SIZE;
+  sc_uint<dev_dev_addr_size> dev_prefix = haddr.read( ) >> dev_inner_addr_size;
 
-  for( int i = 0; i < DEV_CNT; i++ ) { 
+  for( int i = 0; i < dev_cnt; i++ ) { 
     hsel[i] = ( dev_prefix == devs[i].prefix ) ? 1 : 0;
   }
 

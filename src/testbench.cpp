@@ -27,8 +27,8 @@ void bus_tb( ) {
 
   // AMBA ports
   sc_signal<bool, SC_MANY_WRITERS> hwrite;
-  sc_signal<bool, SC_MANY_WRITERS > hsel[ DEV_CNT ];
-  sc_signal<bool, SC_MANY_WRITERS > hreset[ DEV_CNT ];
+  sc_signal<bool, SC_MANY_WRITERS > hsel[ dev_cnt ];
+  sc_signal<bool, SC_MANY_WRITERS > hreset[ dev_cnt ];
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata_buf;
@@ -44,10 +44,10 @@ void bus_tb( ) {
   bus.hwdata_buf( hwdata_buf );
   bus.hrdata( hrdata );
   bus.hrdata_buf( hrdata_buf );
-  for( i = 0; i < DEV_CNT; i++ ) {
+  for( i = 0; i < dev_cnt; i++ ) {
     bus.hsel[i]( hsel[i] );
   }
-  for( i = 0; i < DEV_CNT; i++ ) {
+  for( i = 0; i < dev_cnt; i++ ) {
     bus.hreset[i]( hreset[i] );
   }
 
@@ -71,10 +71,10 @@ void bus_tb( ) {
   sc_trace( wf, hwdata, "hwdata" );
   sc_trace( wf, hrdata_buf, "hrdata_buf" );
   sc_trace( wf, hrdata, "hrdata" );
-  for( i = 0; i < DEV_CNT; i++ ) {
+  for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hsel[i], "hsel_" + to_string(i) );
   }
-  for( i = 0; i < DEV_CNT; i++ ) {
+  for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hreset[i], "hreset_" + to_string(i) );
   }
 
