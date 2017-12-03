@@ -12,8 +12,9 @@ void test_bus::write( int address, int body ) {
 void test_bus::read( int address, int body ) {
 
   haddr.write( address );
+  hrdata_buf.write( body );
+  hwrite.write( 0 );
   wait( );
-  hrdata.write( body );
   wait( );
 }
 

@@ -27,7 +27,6 @@ SC_MODULE( bus_amba ) {
     AMBA_IDLE,
     AMBA_READ_ADR,
     AMBA_READ_DATA,
-    AMBA_READ_CAPT,
     AMBA_WRITE_ADR,
     AMBA_WRITE_DATA
   };
@@ -55,6 +54,5 @@ private:
   void amba_write_address( );
   void amba_read_address( );
   void amba_read_data( );
-  void amba_read_capture( );
 };
 

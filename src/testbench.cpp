@@ -29,8 +29,8 @@ void bus_tb( ) {
   sc_signal<bool, SC_MANY_WRITERS> hwrite;
   sc_signal<bool, SC_MANY_WRITERS > hsel[ DEVICE_COUNT ];
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata_buf;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata_buf;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_buf;
 
@@ -52,7 +52,7 @@ void bus_tb( ) {
   bus_t.haddr( haddr ); 
   bus_t.hwrite( hwrite );
   bus_t.hwdata_buf( hwdata_buf );
-  bus_t.hrdata( hrdata );
+  bus_t.hrdata_buf( hrdata_buf );
   
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );

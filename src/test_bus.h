@@ -5,9 +5,9 @@
 SC_MODULE( test_bus ) {
   sc_in<bool> clk;
   sc_out<bool> hwrite;
-  sc_out<sc_uint<32> > haddr;
+  sc_inout<sc_uint<32> > haddr;
   sc_out<sc_uint<32> > hwdata_buf;
-  sc_out<sc_uint<32> > hrdata;
+  sc_out<sc_uint<32> > hrdata_buf;
 
   void demo( );
 
