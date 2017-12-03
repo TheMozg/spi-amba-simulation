@@ -1,9 +1,23 @@
 #include "bus_amba.h"
 
+void bus_amba::init_dev( ) {
+  uint32_t base = DEV_ADDR_START;
+  for( int i = 0; i < DEV_CNT; i++ ) {
+    dev_addr_map_t dev;
+    dev.base = base;
+    dev.end = dev.base | DEV_INNER_ADDR_MASK;
+    dev.prefix = base >> DEV_INNER_ADDR_SIZE;
+    devs[i] = dev;
+    base = ( ( base >> DEV_INNER_ADDR_SIZE ) + 1 ) << DEV_INNER_ADDR_SIZE;
+    cout << "Registered device " << i << " at " << hex << dev.base << " -- " << dev.end 
+         << " prefix " << dev.prefix << endl;
+  } 
+}
+
 // Reset device select lines
 void bus_amba::reset_hsel( ) {
 
-  for( int i = 0; i < DEVICE_COUNT; i++ ) {
+  for( int i = 0; i < DEV_CNT; i++ ) {
     if( hsel[i].read( ) ) {
       hsel[i].write( 0 );
       break;
@@ -16,7 +30,7 @@ void bus_amba::reset_hsel( ) {
 void bus_amba::amba_idle( ) {
 
   //cout << "AMBA IDLE: " << bus_state << endl;
-  for( int i = 0; i < DEVICE_COUNT; i++ ) {
+  for( int i = 0; i < DEV_CNT; i++ ) {
     if( hsel[i].read( ) ) {
       //cout << "\tAMBA IDLE HSEL_" << i << ": " << bus_state << endl;
       bus_state = hwrite.read( ) ? AMBA_WRITE_ADR : AMBA_READ_ADR;
@@ -79,26 +93,14 @@ void bus_amba::bus_fsm( ) {
  
 // Select slave device
 void bus_amba::dev_select( ) {
-  // Oh my oh why oh why you couldn't into memset oh my oh why
-  for( int i = 0; i < DEVICE_COUNT; i++ ) hsel[i] = 0;
+  sc_uint<DEV_DEV_ADDR_SIZE> dev_prefix = haddr.read( ) >> DEV_INNER_ADDR_SIZE;
 
-  sc_uint<20> dev_base = haddr.read( ) >> 12;
+  for( int i = 0; i < DEV_CNT; i++ ) { 
+    hsel[i] = ( dev_prefix == devs[i].prefix ) ? 1 : 0;
+  }
 
   //cout << "AMBA DEVSEL: addr: " << hex << haddr.read( ) << endl;
-  //cout << "AMBA DEVSEL: base addr: " << hex << dev_base << endl;
+  //cout << "AMBA DEVSEL: base addr: " << hex << dev_prefix << endl;
 
-  switch ( dev_base ) {
-    case DEV1_BASE_ADDR_PREFIX:
-      hsel[0] = 1;
-      break;
-    case DEV2_BASE_ADDR_PREFIX:
-      hsel[1] = 1;
-      break;
-    case DEV3_BASE_ADDR_PREFIX:
-      hsel[2] = 1;
-      break;
-    default:
-      break;
-  }
 }
 
