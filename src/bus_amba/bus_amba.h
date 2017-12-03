@@ -51,9 +51,7 @@ SC_MODULE( bus_amba ) {
 private:
   void reset_hsel( );
   void amba_idle( );
-  void amba_write_data( );
   void amba_write_address( );
   void amba_read_address( );
-  void amba_read_data( );
 };
 

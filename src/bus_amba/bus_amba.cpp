@@ -35,14 +35,6 @@ void bus_amba::amba_write_address( ) {
 
 }
 
-// Data phase of write transaction
-void bus_amba::amba_write_data( ) {
-
-  //cout << "AMBA WRITE DATA: " << bus_state << endl;
-  reset_hsel( );
-
-}
-
 // Address phase of read transaction
 void bus_amba::amba_read_address( ) {
 
@@ -50,14 +42,6 @@ void bus_amba::amba_read_address( ) {
   haddr.write( 0 );
   hwrite.write( 0 );
   hrdata.write( hrdata_buf.read( ) );
-
-}
-
-// Data phase of read transaction
-void bus_amba::amba_read_data( ) {
-
-  //cout << "AMBA READ DATA: " << bus_state << endl;
-  reset_hsel( );
 
 }
 
@@ -74,7 +58,7 @@ void bus_amba::bus_fsm( ) {
       break;
     
     case AMBA_WRITE_DATA:
-      amba_write_data( );
+      reset_hsel( );
       bus_state = AMBA_IDLE;
       break;
 
@@ -84,7 +68,7 @@ void bus_amba::bus_fsm( ) {
       break;
 
     case AMBA_READ_DATA:
-      amba_read_data( );
+      reset_hsel( );
       bus_state = AMBA_IDLE;
       break;
 
