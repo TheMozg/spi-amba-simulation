@@ -22,6 +22,7 @@ SC_MODULE( bus_amba ) {
   sc_out<sc_uint<32> > hrdata_buf;
 
   sc_out<bool> hsel[ DEVICE_COUNT ];
+  sc_out<bool> hreset[ DEVICE_COUNT ];
 
   enum fsm_state {
     AMBA_IDLE,
