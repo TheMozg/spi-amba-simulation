@@ -1,3 +1,5 @@
+#pragma once
+
 #include "systemc.h"
 
 SC_MODULE( test_spi ) {
