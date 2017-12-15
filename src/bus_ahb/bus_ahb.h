@@ -31,7 +31,7 @@ struct dev_addr_map_t {
 // Devices on the bus
 static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
-SC_MODULE( bus_amba ) {
+SC_MODULE( bus_ahb ) {
   // AMBA ports
   sc_in<bool>     hclk;
   sc_inout<bool>  hwrite;
@@ -51,7 +51,7 @@ SC_MODULE( bus_amba ) {
     AMBA_WRITE_DATA
   } bus_state;
 
-  SC_CTOR( bus_amba ): hclk( "hclk" ), hwrite( "hwrite" ) {
+  SC_CTOR( bus_ahb ): hclk( "hclk" ), hwrite( "hwrite" ) {
     init_dev( );
     bus_state = AMBA_IDLE;
 

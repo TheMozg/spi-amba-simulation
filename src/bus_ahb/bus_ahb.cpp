@@ -1,6 +1,6 @@
-#include "bus_amba.h"
+#include "bus_ahb.h"
 
-void bus_amba::init_dev( ) {
+void bus_ahb::init_dev( ) {
   uint32_t base = dev_addr_start;
   for( int i = 0; i < dev_cnt; i++ ) {
     dev_addr_map_t dev;
@@ -14,11 +14,11 @@ void bus_amba::init_dev( ) {
   } 
 }
 
-void bus_amba::reset_hsel( ) {
+void bus_ahb::reset_hsel( ) {
   for( int i = 0; i < dev_cnt; i++ ) hsel[i].write( 0 );
 }
 
-void bus_amba::amba_idle( ) {
+void bus_ahb::amba_idle( ) {
 
 #ifdef AMBA_DEBUG
   cout << "AMBA IDLE: " << bus_state << endl;
@@ -37,7 +37,7 @@ void bus_amba::amba_idle( ) {
 
 }
 
-void bus_amba::amba_write_address( ) {
+void bus_ahb::amba_write_address( ) {
 
 #ifdef AMBA_DEBUG
   cout << "AMBA WRITE ADDRESS: " << bus_state << endl;
@@ -48,7 +48,7 @@ void bus_amba::amba_write_address( ) {
 
 }
 
-void bus_amba::amba_read_address( ) {
+void bus_ahb::amba_read_address( ) {
 
 #ifdef AMBA_DEBUG
   cout << "AMBA READ ADDRESS: " << bus_state << endl;
@@ -59,7 +59,7 @@ void bus_amba::amba_read_address( ) {
 
 }
 
-void bus_amba::bus_fsm( ) {
+void bus_ahb::bus_fsm( ) {
 
 #ifdef AMBA_DEBUG
   cout << "AMBA FSM: " << bus_state << endl;
@@ -93,7 +93,7 @@ void bus_amba::bus_fsm( ) {
   } 
 }
  
-void bus_amba::dev_select( ) {
+void bus_ahb::dev_select( ) {
   sc_uint<dev_dev_addr_size> dev_prefix = haddr.read( ) >> dev_inner_addr_size;
 
   for( int i = 0; i < dev_cnt; i++ ) { 
