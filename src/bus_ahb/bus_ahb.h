@@ -2,10 +2,9 @@
 #include <systemc.h>
 
 // Debug log macro
-#define AMBA_DEBUG
-#undef AMBA_DEBUG
+//#define AHB_DEBUG
 
-// How many devices are interconnected by AMBA bus
+// How many devices are interconnected by AHB bus
 const char dev_cnt = 3;
 
 // How many bits are for device address and how many for inner address of device
@@ -20,7 +19,7 @@ const uint32_t dev_inner_addr_mask  = 0xFFFFFFFF >> dev_dev_addr_size;
 // Registering devices according to DEV* macros
 // For example 
 // device 0 memory will be 0x40000000 -- 0x40000FFF, 
-// device 2 0x40001000 -- 0x40001FFF and so on
+// device 1 0x40001000 -- 0x40001FFF and so on
 struct dev_addr_map_t {
   uint32_t index;   // Device index
   uint32_t base;    // Device memory base address
@@ -32,7 +31,7 @@ struct dev_addr_map_t {
 static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
 SC_MODULE( bus_ahb ) {
-  // AMBA ports
+  // AHB ports
   sc_in<bool>     hclk;
   sc_inout<bool>  hwrite;
   sc_out<bool>    hsel[ dev_cnt ];
@@ -44,16 +43,16 @@ SC_MODULE( bus_ahb ) {
 
   // Transaction FSM states
   enum fsm_state {
-    AMBA_IDLE,
-    AMBA_READ_ADR,
-    AMBA_READ_DATA,
-    AMBA_WRITE_ADR,
-    AMBA_WRITE_DATA
+    AHB_IDLE,
+    AHB_READ_ADR,
+    AHB_READ_DATA,
+    AHB_WRITE_ADR,
+    AHB_WRITE_DATA
   } bus_state;
 
   SC_CTOR( bus_ahb ): hclk( "hclk" ), hwrite( "hwrite" ) {
     init_dev( );
-    bus_state = AMBA_IDLE;
+    bus_state = AHB_IDLE;
 
     SC_METHOD( bus_fsm );
     sensitive << hclk.pos( );

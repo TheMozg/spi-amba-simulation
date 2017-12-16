@@ -20,18 +20,18 @@ void bus_ahb::reset_hsel( ) {
 
 void bus_ahb::amba_idle( ) {
 
-#ifdef AMBA_DEBUG
-  cout << "AMBA IDLE: " << bus_state << endl;
+#ifdef AHB_DEBUG
+  cout << "AHB IDLE: " << bus_state << endl;
 #endif
 
   for( int i = 0; i < dev_cnt; i++ ) {
     if( hsel[i].read( ) ) {
 
-#ifdef AMBA_DEBUG
-      cout << "\tAMBA IDLE HSEL_" << i << ": " << bus_state << endl;
+#ifdef AHB_DEBUG
+      cout << "\tAHB IDLE HSEL_" << i << ": " << bus_state << endl;
 #endif
 
-      bus_state = hwrite.read( ) ? AMBA_WRITE_ADR : AMBA_READ_ADR;
+      bus_state = hwrite.read( ) ? AHB_WRITE_ADR : AHB_READ_ADR;
     }
   }
 
@@ -39,8 +39,8 @@ void bus_ahb::amba_idle( ) {
 
 void bus_ahb::amba_write_address( ) {
 
-#ifdef AMBA_DEBUG
-  cout << "AMBA WRITE ADDRESS: " << bus_state << endl;
+#ifdef AHB_DEBUG
+  cout << "AHB WRITE ADDRESS: " << bus_state << endl;
 #endif
 
   haddr.write( 0 );
@@ -50,8 +50,8 @@ void bus_ahb::amba_write_address( ) {
 
 void bus_ahb::amba_read_address( ) {
 
-#ifdef AMBA_DEBUG
-  cout << "AMBA READ ADDRESS: " << bus_state << endl;
+#ifdef AHB_DEBUG
+  cout << "AHB READ ADDRESS: " << bus_state << endl;
 #endif
 
   haddr.write( 0 );
@@ -61,31 +61,31 @@ void bus_ahb::amba_read_address( ) {
 
 void bus_ahb::bus_fsm( ) {
 
-#ifdef AMBA_DEBUG
-  cout << "AMBA FSM: " << bus_state << endl;
+#ifdef AHB_DEBUG
+  cout << "AHB FSM: " << bus_state << endl;
 #endif
 
-  if( bus_state == AMBA_IDLE ) amba_idle( );
+  if( bus_state == AHB_IDLE ) amba_idle( );
 
   switch( bus_state ) {
-    case AMBA_WRITE_ADR:
+    case AHB_WRITE_ADR:
       amba_write_address( );
-      bus_state = AMBA_WRITE_DATA;     
+      bus_state = AHB_WRITE_DATA;     
       break;
     
-    case AMBA_WRITE_DATA:
+    case AHB_WRITE_DATA:
       reset_hsel( );
-      bus_state = AMBA_IDLE;
+      bus_state = AHB_IDLE;
       break;
 
-    case AMBA_READ_ADR:
+    case AHB_READ_ADR:
       amba_read_address( );
-      bus_state = AMBA_READ_DATA;
+      bus_state = AHB_READ_DATA;
       break;
 
-    case AMBA_READ_DATA:
+    case AHB_READ_DATA:
       reset_hsel( );
-      bus_state = AMBA_IDLE;
+      bus_state = AHB_IDLE;
       break;
 
     default:
@@ -100,9 +100,9 @@ void bus_ahb::dev_select( ) {
     hsel[i] = ( dev_prefix == devs[i].prefix ) ? 1 : 0;
   }
 
-#ifdef AMBA_DEBUG
-  cout << "AMBA DEVSEL: addr: " << hex << haddr.read( ) << endl;
-  cout << "AMBA DEVSEL: base addr: " << hex << dev_prefix << endl;
+#ifdef AHB_DEBUG
+  cout << "AHB DEVSEL: addr: " << hex << haddr.read( ) << endl;
+  cout << "AHB DEVSEL: base addr: " << hex << dev_prefix << endl;
 #endif
 
 }

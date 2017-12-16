@@ -1,55 +1,29 @@
 #include "test_spi.h"
 
-// Cruedly made test bench
-
-void wait_fall( ) {
-  wait( 40, SC_NS );
-}
-
-void test_spi::test_send( uint8_t in, uint8_t out, bool reset ) {
-
-  data_in.write( in );
-
+void test_spi::test_send( uint8_t in, uint8_t out ) {
   rst.write( 1 );
-
+  wait( );
+  wait( );
   wait( );
   rst.write( 0 );
-  wait( );
-  
+  data_in_m.write( in );
+  data_in_s.write( out );
+
   start.write( 1 );
+  wait( );
+  wait( );
+  start.write( 0 );
 
-  msg = out;
-
-  for( counter = 0; counter < 8; counter++ ) {
-    if( counter >= 4 && reset ) {
-      miso.write( 0 );
-      rst.write( 1 );
-      wait_fall( );
-      rst.write( 0 );
-      wait_fall( );
-      break;
-    } else {
-      miso.write( msg << 7 & 0xFF );
-      msg = msg >> 1;
-      wait_fall( );
-    }
-    start.write( 0 );
-  }
-
-  wait_fall( );
-
-  for ( int i = 0; i < 3; ++i ) {
-    wait( );
-  }
+  for( int i = 0; i < 40; i++ ) wait( );
 
 }
 
 void test_spi::demo_send( ) {
+  for( int i = 0; i < 5; i++ ) wait( );
 
-  test_send( 0b00110101, 0b01010011, false );
-  test_send( 0b10011001, 0b00001010, false );
-  test_send( 0b10011001, 0b00001010, true );
-
+  test_send( 0b00110101, 0b01010011 );
+  test_send( 0b10011001, 0b00001010 );
+  test_send( 0b10011001, 0b00001010 );
   sc_stop( );
 }
 

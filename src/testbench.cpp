@@ -4,18 +4,19 @@
 using namespace std;
 
 #include "systemc.h"
-#include "spi_m.h"
+#include "spi.h"
 #include "bus_ahb.h"
 #include "test_bus.h"
 #include "test_spi.h"
 
-#define TRACE_FILE "testbench"
+#define TRACE_FILE "system"
 
 void bus_tb( );
 void spi_tb( );
 
 int sc_main ( int argc, char** argv ) {
-  bus_tb( );
+  //bus_tb( );
+  spi_tb( );
   return 0;
 }
 
@@ -84,41 +85,38 @@ void spi_tb( ) {
   sc_clock clock ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
 
   // SPI ports
-  sc_signal<bool> miso;
-  sc_signal<bool> mosi;
+  sc_signal<bool, SC_MANY_WRITERS> miso;
+  sc_signal<bool, SC_MANY_WRITERS> mosi;
   sc_signal<bool> rst;
   sc_signal<bool> start;
   sc_signal<bool> ss;
   sc_signal<bool> sclk;
-  sc_signal<bool> busy;
+  sc_signal<bool> busy_m;
+  sc_signal<bool> busy_s;
 
-  sc_signal<sc_uint<8> > data_in;
-  sc_signal<sc_uint<8> > data_out;
+  sc_signal<sc_uint<8> > data_in_m;
+  sc_signal<sc_uint<8> > data_out_m;
+
+  sc_signal<sc_uint<8> > data_in_s;
+  sc_signal<sc_uint<8> > data_out_s;
 
   // Connect the DUT
-  spi_m spi_m( "SPI_MASTER" );
-    spi_m.clk( clock );
-    spi_m.miso( miso );
-    spi_m.mosi( mosi );
-    spi_m.rst( rst );
-    spi_m.start( start );
-    spi_m.ss( ss );
-    spi_m.sclk( sclk );
-    spi_m.busy( busy );
-
-    spi_m.data_out( data_out );
-    spi_m.data_in( data_in );
-
-
   test_spi spi_t( "SPI_SLAVE" );
-    spi_t.clk( clock );
+    spi_t.clock( clock );
     spi_t.miso( miso );
     spi_t.mosi( mosi );
+    spi_t.busy_m( busy_m );
+    spi_t.busy_s( busy_s );
     spi_t.rst( rst );
     spi_t.start( start );
     spi_t.ss( ss );
+    spi_t.sclk( sclk );
 
-    spi_t.data_in( data_in );
+    spi_t.data_in_m( data_in_m );
+    spi_t.data_in_s( data_in_s );
+
+    spi_t.data_out_m( data_out_m );
+    spi_t.data_out_s( data_out_s );
 
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
@@ -132,10 +130,14 @@ void spi_tb( ) {
   sc_trace( wf, start, "start" );
   sc_trace( wf, ss, "ss" );
   sc_trace( wf, sclk, "sclk" );
-  sc_trace( wf, busy, "busy" );
+  sc_trace( wf, busy_m, "busy_m" );
+  sc_trace( wf, busy_s, "busy_s" );
 
-  sc_trace( wf, data_in, "data_in" );
-  sc_trace( wf, data_out, "data_out" );
+  sc_trace( wf, data_in_m, "data_in_m" );
+  sc_trace( wf, data_out_m, "data_out_m" );
+
+  sc_trace( wf, data_in_s, "data_in_s" );
+  sc_trace( wf, data_out_s, "data_out_s" );
 
   sc_start( );
 }
