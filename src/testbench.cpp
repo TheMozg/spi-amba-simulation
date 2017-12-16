@@ -9,7 +9,7 @@ using namespace std;
 #include "test_bus.h"
 #include "test_spi.h"
 
-#define TRACE_FILE "testbench"
+#define TRACE_FILE "system"
 
 void bus_tb( );
 void spi_tb( );

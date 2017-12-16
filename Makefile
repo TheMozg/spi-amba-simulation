@@ -1,12 +1,14 @@
+TARGET              :=  system
+
 BUILD_DIR           :=  $(abspath build)
 
 SYSTEMC_THD_SRC_DIR := thirdparty/systemc
 SYSTEMC_THD_BLD_DIR := $(BUILD_DIR)/$(SYSTEMC_THD_SRC_DIR)-build
 SYSTEMC_THD_INS_DIR := $(BUILD_DIR)/$(SYSTEMC_THD_SRC_DIR)-install
 
-SYSTEMC_SRC_DIR     := src src/div_clk src/spi_m src/bus_amba
-SYSTEMC_SPI_EXE     := $(BUILD_DIR)/spi_systemc
-SYSTEMC_SPI_VCD     := $(BUILD_DIR)/spi_systemc.vcd
+SYSTEMC_SRC_DIR     := src src/div_clk src/spi_m src/bus_ahb
+SYSTEMC_SPI_EXE     := $(BUILD_DIR)/$(TARGET)
+SYSTEMC_SPI_VCD     := $(BUILD_DIR)/$(TARGET).vcd
 SYSTEMC_SOURCES     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.cpp)) $(SYSTEMC_THD_INS_DIR)/lib-linux64/libsystemc.a
 SYSTEMC_HEADERS     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.h))
 
