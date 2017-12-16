@@ -5,7 +5,7 @@ using namespace std;
 
 #include "systemc.h"
 #include "spi_m.h"
-#include "bus_ahb.h"
+#include "bus_amba.h"
 #include "test_bus.h"
 #include "test_spi.h"
 
@@ -34,7 +34,7 @@ void bus_tb( ) {
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
 
   // Connect interconnect bus
-  bus_ahb bus( "BUS_INTER" );
+  bus_amba bus( "BUS_INTER" );
   bus.hclk( clk_m );
   bus.haddr( haddr );
   bus.hwrite( hwrite );
