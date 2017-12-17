@@ -1,4 +1,4 @@
-// SPI, mode 0, transieve from 0th bit to 7th
+// SPI, mode 0, transieve from 0th bit to Nth
 
 // Ports are assigned using write and local vars are assigned using `=` just for readability.
 #include "spi.h"
@@ -18,7 +18,7 @@ void spi::rx_write( ) {
 
 void spi::tx_shift( ) {
   shift_reg = shift_reg >> 1;
-  shift_reg[7] = reg_buf;
+  shift_reg[SPI_BIT_CAP - 1] = reg_buf;
 }
 
 // SPI transmit
@@ -57,7 +57,7 @@ void spi::fsm_wait_sclk_0( ) {
   tr_ctr++;
   tx( );
   rx_write( );
-  fsm_state = ( tr_ctr == 8 ) ? SPI_FINAL : SPI_WAIT_SCLK_1;
+  fsm_state = ( tr_ctr == SPI_BIT_CAP ) ? SPI_FINAL : SPI_WAIT_SCLK_1;
 }
 
 void spi::fsm_wait_sclk_1( ) {

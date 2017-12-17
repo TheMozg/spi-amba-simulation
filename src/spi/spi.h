@@ -1,6 +1,6 @@
 #pragma once
 /* 
-  SPI module, working in mode 0 (CPOL = 0, CPHA = 0), transieves 8 bits in 8 cycles.
+  SPI module, working in mode 0 (CPOL = 0, CPHA = 0).
   Ports:
     clk   -- main input clock
     sclk  -- synchronous clock for interaction between SPI modules. 4 times slower than clk.
@@ -18,6 +18,9 @@
   For cold start set rst to high for a cycle
 */
 
+// SPI bit capacity
+#define SPI_BIT_CAP 8
+
 #include "systemc.h"
 #include "div_clk.h"
 
@@ -30,19 +33,17 @@ struct spi : public sc_module {
   sc_out<bool> busy;
 
   // Shift register
-  sc_uint<8> shift_reg;
+  sc_uint<SPI_BIT_CAP> shift_reg;
 
   // Outputs for shift_reg
-  sc_in<sc_uint<8> > data_in;
-  sc_out<sc_uint<8> > data_out;
+  sc_in<sc_uint<SPI_BIT_CAP> > data_in;
+  sc_out<sc_uint<SPI_BIT_CAP> > data_out;
 
   // Transaction counter
-  sc_uint<4> tr_ctr;
+  sc_uint<5> tr_ctr;
 
   // Buffer register
   bool reg_buf;
-
-  sc_uint<2> fsm_state;
 
   void rx_write( );
   void reset( );
@@ -63,7 +64,7 @@ struct spi : public sc_module {
     SPI_WAIT_SCLK_1,
     SPI_WAIT_SCLK_0,
     SPI_FINAL 
-  };
+  } fsm_state;
 
   spi( const sc_module_name& name ) : sc_module( name ) {
 

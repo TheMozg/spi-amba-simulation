@@ -1,11 +1,12 @@
 #pragma once
 
 #include "systemc.h"
+#include "pmodjstk.h"
 #include "spi.h"
 
-SC_MODULE( test_spi ) {
+SC_MODULE( test_jstk ) {
   void demo_send( );
-  void test_send( uint8_t in, uint8_t out );
+  void test_send( uint8_t in );
 
   sc_in<bool> clock;
   sc_inout<bool> miso, mosi, rst, ss, sclk;
@@ -17,7 +18,7 @@ SC_MODULE( test_spi ) {
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in_s;
   sc_inout<sc_uint<SPI_BIT_CAP> > data_out_s;
 
-  SC_CTOR( test_spi ) {
+  SC_CTOR( test_jstk ) {
     spi_m* m_spi = new spi_m( "SPI_MASTER" );
     m_spi->clk( clock );
     m_spi->miso( miso );
@@ -31,17 +32,17 @@ SC_MODULE( test_spi ) {
     m_spi->data_out( data_out_m );
     m_spi->data_in( data_in_m );
 
-    spi_s* s_spi = new spi_s( "SPI_SLAVE" );
-    s_spi->clk( clock );
-    s_spi->miso( miso );
-    s_spi->mosi( mosi );
-    s_spi->rst( rst );
-    s_spi->ss( ss );
-    s_spi->sclk( sclk );
-    s_spi->busy( busy_s );
+    pmodjstk* jstk = new pmodjstk( "PMODJSTK" );
+    jstk->clk( clock );
+    jstk->miso( miso );
+    jstk->mosi( mosi );
+    jstk->rst( rst );
+    jstk->ss( ss );
+    jstk->sclk( sclk );
+    jstk->busy( busy_s );
 
-    s_spi->data_out( data_out_s );
-    s_spi->data_in( data_in_s );
+    jstk->data_out( data_out_s );
+    jstk->data_in( data_in_s );
 
     SC_THREAD( demo_send );
     sensitive << clock.pos( );
