@@ -16,10 +16,12 @@ void bus_tb( );
 void spi_tb( );
 void jstk_tb( );
 
-int sc_main ( int argc, char** argv ) {
-  //bus_tb( );
-  //spi_tb( );
+int sc_main( int argc, char** argv ) {
+
+//  bus_tb( );
+//  spi_tb( );
   jstk_tb( );
+
   return 0;
 }
 
