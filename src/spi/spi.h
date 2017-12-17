@@ -1,6 +1,6 @@
 #pragma once
 /* 
-  SPI module, working in mode 0 (CPOL = 0, CPHA = 0), master only, transieves 8 bits in 8 cycles.
+  SPI module, working in mode 0 (CPOL = 0, CPHA = 0), transieves 8 bits in 8 cycles.
   Ports:
     clk   -- main input clock
     sclk  -- synchronous clock for interaction between SPI modules. 4 times slower than clk.
@@ -8,7 +8,6 @@
     busy  -- indicates transaction in progress. 
     ss    -- slave select. Is low for 8 cycles, set to high on last positive sclk edge of transaction.
     start -- signal to start transaction, edge sensitive.
-    set   -- defines whether spi is master or slave. 1 -- master, 0 -- slave.
 
     data_in/data_out  -- mosi/miso registers
     mosi/miso -- master out/master in wires. 
@@ -20,6 +19,7 @@
 #include "systemc.h"
 #include "div_clk.h"
 
+// Base struct
 struct spi : public sc_module {
   SC_HAS_PROCESS( spi );
 
@@ -68,7 +68,9 @@ struct spi : public sc_module {
 
 };
 
+// Master SPI
 struct spi_m : public spi {
+
   SC_HAS_PROCESS( spi_m );
 
   sc_in<bool> miso, start;
@@ -105,6 +107,7 @@ struct spi_m : public spi {
 
 };
 
+// Slave SPI
 struct spi_s : public spi {
 
   SC_HAS_PROCESS( spi_s );
@@ -123,3 +126,4 @@ struct spi_s : public spi {
   }
 
 };
+

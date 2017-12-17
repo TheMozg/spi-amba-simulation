@@ -1,4 +1,4 @@
-// SPI, mode 0, only master mode, transieve from 0th bit to 7th
+// SPI, mode 0, transieve from 0th bit to 7th
 
 // Ports are assigned using write and local vars are assigned using `=` just for readability.
 #include "spi.h"
