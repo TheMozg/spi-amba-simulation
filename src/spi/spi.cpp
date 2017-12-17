@@ -53,107 +53,84 @@ void spi_s::end_transaction( ) {
   fsm_state = SPI_IDLE;
 }
 
-// Main SPI loop
-void spi_m::loop( ) {
-
-  if( cold_run ) {
-    ss.write( 1 );
-    cold_run = 0;
-  }
-
-  if( rst ) {
-    data_out.write( 0 ); 
-    end_transaction( );
-    return;
-  }
-
-  switch( fsm_state ) {
-    
-    case SPI_IDLE:
-      if( start ) {
-        busy.write( 1 );
-        ss.write( 0 );
-
-        shift_reg = data_in.read( );
-
-        tx( );
-
-        fsm_state = SPI_WAIT_SCLK_1;
-      }
-      break;
-
-    case SPI_WAIT_SCLK_0:
-      if( !sclk ) {
-
-        tr_ctr++;
-
-        tx( );
-
-        rx_write( );
-        
-        fsm_state = ( tr_ctr == 8 ) ? SPI_FINAL : SPI_WAIT_SCLK_1;
-      }
-      break;
-
-    case SPI_WAIT_SCLK_1:
-      if( sclk ) {
-
-        rx_capture( );
-
-        fsm_state = SPI_WAIT_SCLK_0;
-      }
-      break;
-
-    case SPI_FINAL:
-    default:
-      end_transaction( );
-      break;
-  } 
-
+void spi::fsm_wait_sclk_0( ) {
+  tr_ctr++;
+  tx( );
+  rx_write( );
+  fsm_state = ( tr_ctr == 8 ) ? SPI_FINAL : SPI_WAIT_SCLK_1;
 }
 
-void spi_s::loop( ) {
-  
-  if( rst ) {
-    end_transaction( );
+void spi::fsm_wait_sclk_1( ) {
+  rx_capture( );
+  fsm_state = SPI_WAIT_SCLK_0;
+}
+
+void spi_m::fsm_wait_sclk_0( ) {
+  if( !sclk ) {
+    spi::fsm_wait_sclk_0( );
+  }
+}
+
+void spi_m::fsm_wait_sclk_1( ) {
+  if( sclk ) {
+    spi::fsm_wait_sclk_1( );
+  }
+}
+
+void spi_s::fsm_wait_sclk_0( ) {
+  if( !sclk ) {
+    spi::fsm_wait_sclk_0( );
+  }
+}
+
+void spi_s::fsm_wait_sclk_1( ) {
+  if( sclk ) {
+    spi::fsm_wait_sclk_1( );
+  }
+}
+
+void spi_m::fsm_idle( ) {
+  if( start ) {
     data_out.write( 0 ); 
+    busy.write( 1 );
+    ss.write( 0 );
+    shift_reg = data_in.read( );
+    tx( );
+    fsm_state = SPI_WAIT_SCLK_1;
+  }
+}
+
+void spi_s::fsm_idle( ) {
+  if( !ss ) {
+    data_out.write( 0 ); 
+    busy.write( 1 );
+    shift_reg = data_in.read( );
+    tx( );
+    fsm_state = SPI_WAIT_SCLK_1;
+  }
+}
+
+// Main SPI loop
+void spi::loop( ) {
+
+  if( rst ) {
+    data_out.write( 0 ); 
+    end_transaction( );
     return;
   }
 
   switch( fsm_state ) {
     
     case SPI_IDLE:
-      if( !ss ) {
-        busy.write( 1 );
-
-        shift_reg = data_in.read( );
-
-        tx( );
-
-        fsm_state = SPI_WAIT_SCLK_1;
-      }
+      fsm_idle( );
       break;
 
     case SPI_WAIT_SCLK_0:
-      if( !sclk ) {
-
-        tr_ctr++;
-
-        tx( );
-
-        rx_write( );
-        
-        fsm_state = ( tr_ctr == 8 ) ? SPI_FINAL : SPI_WAIT_SCLK_1;
-      }
+      fsm_wait_sclk_0( );
       break;
 
     case SPI_WAIT_SCLK_1:
-      if( sclk ) {
-
-        rx_capture( );
-
-        fsm_state = SPI_WAIT_SCLK_0;
-      }
+      fsm_wait_sclk_1( );
       break;
 
     case SPI_FINAL:

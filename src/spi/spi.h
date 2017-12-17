@@ -14,6 +14,8 @@
                  Set to high on falling edge of sclk, 
                  read happens on falling edge of sclk, 
                  write to data_in/data_out on rising edge of sclk.
+
+  For cold start set rst to high for a cycle
 */
 
 #include "systemc.h"
@@ -49,8 +51,12 @@ struct spi : public sc_module {
   virtual void rx_capture( ) { };
   virtual void tx( ) { };
 
-  virtual void loop( ) { };
+  void loop( );
   virtual void end_transaction( ) { };
+
+  virtual void fsm_wait_sclk_0( );
+  virtual void fsm_wait_sclk_1( );
+  virtual void fsm_idle( ) { };
 
   enum {
     SPI_IDLE,
@@ -76,10 +82,6 @@ struct spi_m : public spi {
   sc_in<bool> miso, start;
   sc_out<bool> mosi, sclk, ss;
 
-  // If module just started
-  // Is equired for SS set
-  bool cold_run = 1;
-
   // SPI clock divider to generate sclk
   div_clk* clk_gen;
 
@@ -87,6 +89,10 @@ struct spi_m : public spi {
   void end_transaction( );
   void rx_capture( );
   void tx( );
+
+  void fsm_idle( );
+  void fsm_wait_sclk_0( );
+  void fsm_wait_sclk_1( );
 
   spi_m( const sc_module_name& name ) : spi( name ) {
     clk_gen = new div_clk( "DIV_CLK" );
@@ -119,6 +125,10 @@ struct spi_s : public spi {
   void end_transaction( );
   void rx_capture( );
   void tx( );
+
+  void fsm_idle( );
+  void fsm_wait_sclk_0( );
+  void fsm_wait_sclk_1( );
 
   spi_s( const sc_module_name& name ) : spi( name ) {
     sensitive << sclk.pos( ) 
