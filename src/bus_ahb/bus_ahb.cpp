@@ -59,7 +59,7 @@ void bus_ahb::amba_read_address( ) {
 
 }
 
-void bus_ahb::bus_fsm( ) {
+void bus_ahb::fsm( ) {
 
 #ifdef AHB_DEBUG
   cout << "AHB FSM: " << bus_state << endl;

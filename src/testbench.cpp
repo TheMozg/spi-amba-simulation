@@ -9,20 +9,90 @@ using namespace std;
 #include "test_bus.h"
 #include "test_spi.h"
 #include "test_jstk.h"
+#include "test_dig_ctr.h"
 
 #define TRACE_FILE "system"
 
 void bus_tb( );
 void spi_tb( );
 void jstk_tb( );
+void bus_dig_ctr( );
 
-int sc_main( int argc, char** argv ) {
+int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
+  bus_dig_ctr( );
 //  bus_tb( );
 //  spi_tb( );
-  jstk_tb( );
+//  jstk_tb( );
 
   return 0;
+}
+
+void bus_dig_ctr( ) {
+  int i;
+  
+  // Main clock
+  sc_clock clk_m ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
+
+  // AMBA ports
+  sc_signal<bool, SC_MANY_WRITERS> hwrite;
+  sc_signal<bool, SC_MANY_WRITERS> hsel[ dev_cnt ];
+  sc_signal<bool, SC_MANY_WRITERS> hreset[ dev_cnt ];
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> main_reg;
+  sc_signal<sc_uint<32> > ctrl_wires;
+
+  // Connect interconnect bus
+  bus_ahb bus( "BUS_INTER" );
+  bus.hclk( clk_m );
+  bus.haddr( haddr );
+  bus.hwrite( hwrite );
+  bus.hwdata( hwdata );
+  bus.hrdata( hrdata );
+  for( i = 0; i < dev_cnt; i++ ) {
+    bus.hsel[i]( hsel[i] );
+  }
+  for( i = 0; i < dev_cnt; i++ ) {
+    bus.hreset[i]( hreset[i] );
+  }
+
+  test_dig_ctr bus_t( "DIG_CTR_TEST" );
+  bus_t.clk( clk_m );
+  bus_t.hsel( hsel[0] );
+  bus_t.hreset( hreset[0] );
+  bus_t.haddr( haddr ); 
+  bus_t.hwrite( hwrite );
+  bus_t.hwdata( hwdata );
+  bus_t.hrdata( hrdata );
+  bus_t.main_reg( main_reg );
+  bus_t.ctrl_wires( ctrl_wires );
+  
+  // Open VCD file
+  sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
+
+  // Dum main clock
+  sc_trace( wf, clk_m, "clk_m" );
+
+  // Dump AMBA signals
+  sc_trace( wf, haddr, "haddr" );
+  sc_trace( wf, hwrite, "hwrite" );
+  sc_trace( wf, hwdata, "hwdata" );
+  sc_trace( wf, hrdata, "hrdata" );
+  sc_trace( wf, ctrl_wires, "ctrl_wires" );
+  sc_trace( wf, main_reg, "main_reg" );
+  for( i = 0; i < dev_cnt; i++ ) {
+    sc_trace( wf, hsel[i], "hsel_" + to_string(i) );
+  }
+  for( i = 0; i < dev_cnt; i++ ) {
+    sc_trace( wf, hreset[i], "hreset_" + to_string(i) );
+  }
+
+  sc_start( );
+
+  sc_close_vcd_trace_file( wf );
+
 }
 
 void bus_tb( ) {

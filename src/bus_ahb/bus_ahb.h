@@ -1,5 +1,9 @@
+/*
+  AMBA AHB bus controller.
+*/
+
 #pragma once
-#include <systemc.h>
+#include "systemc.h"
 
 // Debug log macro
 //#define AHB_DEBUG
@@ -16,7 +20,6 @@ const uint32_t dev_addr_start       = 0x40000000;
 const uint32_t dev_inner_addr_mask  = 0xFFFFFFFF >> dev_dev_addr_size;
 
 // Device memory map
-// Registering devices according to DEV* macros
 // For example 
 // device 0 memory will be 0x40000000 -- 0x40000FFF, 
 // device 1 0x40001000 -- 0x40001FFF and so on
@@ -39,10 +42,10 @@ SC_MODULE( bus_ahb ) {
 
   sc_inout<sc_uint<32> >  haddr;
   sc_out<sc_uint<32> >    hwdata;
-  sc_out<sc_uint<32> >    hrdata;
+  sc_in<sc_uint<32> >     hrdata;
 
   // Transaction FSM states
-  enum fsm_state {
+  enum {
     AHB_IDLE,
     AHB_READ_ADR,
     AHB_READ_DATA,
@@ -54,7 +57,7 @@ SC_MODULE( bus_ahb ) {
     init_dev( );
     bus_state = AHB_IDLE;
 
-    SC_METHOD( bus_fsm );
+    SC_METHOD( fsm );
     sensitive << hclk.pos( );
 
     SC_METHOD( dev_select );
@@ -62,7 +65,7 @@ SC_MODULE( bus_ahb ) {
   }
 
   // Main transaction loop
-  void bus_fsm( );
+  void fsm( );
 
 private:
   void init_dev( );   // Register devices on the bus
