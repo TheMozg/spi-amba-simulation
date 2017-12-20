@@ -8,7 +8,7 @@ void bus_ahb::init_dev( ) {
     dev.end = dev.base | dev_inner_addr_mask;
     dev.prefix = base >> dev_inner_addr_size;
     devs[i] = dev;
-    base = ( ( base >> dev_inner_addr_size ) + 1 ) << dev_inner_addr_size;
+    base = ( ( base >> dev_inner_addr_size ) + 0x10 ) << dev_inner_addr_size;
     cout << "Registered device " << dec << i << " at " << hex << dev.base << " -- " << dev.end 
          << " prefix " << dev.prefix << endl;
   } 

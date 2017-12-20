@@ -69,11 +69,11 @@ SC_MODULE( pmodjstk ) {
     
     fsm_state = JSTK_EMUL_WAIT_FIRST_BYTE;
 
-    x_1 = 0xAD;
-    x_2 = 0xDE;
+    x_1 = 0b11001111;
+    x_2 = 0x00000010;
 
-    y_1 = 0xDA;
-    y_2 = 0xDE;
+    y_1 = 0x01010101;
+    y_2 = 0x10101010;
 
     buttons = 0b00000111;
     

@@ -32,22 +32,20 @@ void cpu::sleep( uint32_t cycles ) {
 
 void cpu::software( ) {
 
+  puts( "-- din_dout testing" );
+
+  write( 0x40000008, 0xDEADBEEF );
+  write( 0x40000008, 0x0101BEDA );
+  read( 0x40000004 );
+
+  puts( "-- din_dout testing done" );
+
   while( 1 ) {
-    puts( "-- din_dout testing" );
-
-    write( 0x40000008, 0xDEADBEEF );
-    write( 0x40000008, 0x0101BEDA );
-    read( 0x40000004 );
-
-    puts( "-- din_dout testing done" );
-
     puts( "-- periph contoller testing" );
-    //read( 0x40001000 );
-    write( 0x40001000, 1 );
-    sleep( 5 );
-    while( read( 0x40001000 ) );
+    write( 0x40010000, 0x00000101 );
+    while( !read( 0x40010004 ) );
+    puts( "-- periph contoller testing done" );
     puts( "-- done" );
-    //break;
   }
 
   sc_stop( );

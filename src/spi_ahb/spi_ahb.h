@@ -29,8 +29,8 @@ SC_MODULE( spi_ahb ) {
   sc_in<bool> miso { "miso" };
   sc_out<bool> mosi { "mosi" }, sclk { "sclk" }, ss { "ss" };
   //sc_in<bool> rst;
-  sc_out<sc_uint<SPI_BIT_CAP> > data_out { "data_out" };
-  sc_in<sc_uint<SPI_BIT_CAP> > data_in { "data_in" };
+  sc_out<sc_uint<SPI_BIT_CAP> > data_out  { "data_out" };
+  sc_inout<sc_uint<SPI_BIT_CAP> > data_in { "data_in" };
 
   //sc_out<bool> ready;
 
@@ -38,7 +38,7 @@ SC_MODULE( spi_ahb ) {
   sc_in<bool> hwrite { "hwrite" }, hsel { "hsel" };
   sc_inout<bool> hreset { "hreset" }; // To send it to SPI rst ports
 
-  sc_in<sc_uint<32> >  haddr { "haddr" };
+  sc_in<sc_uint<32> >  haddr  { "haddr" };
   sc_in<sc_uint<32> >  hwdata { "hwdata" };
   sc_out<sc_uint<32> > hrdata { "hrdata" };
 
@@ -62,6 +62,7 @@ SC_MODULE( spi_ahb ) {
 
   void fsm( );
   void read( sc_uint<16> addr );
+  void wait_spi( );
 
   SC_CTOR( spi_ahb ) {
     fsm_state = SPI_AHB_IDLE;

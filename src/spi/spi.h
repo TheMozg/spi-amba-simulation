@@ -68,6 +68,8 @@ struct spi : public sc_module {
 
   spi( const sc_module_name& name ) : sc_module( name ) {
 
+    busy.initialize( 0 );
+
     SC_METHOD( loop );
     sensitive << clk.pos( ) 
               << rst.pos( );
@@ -97,6 +99,8 @@ struct spi_m : public spi {
 
   spi_m( const sc_module_name& name ) : spi( name ) {
     clk_gen = new div_clk( "DIV_CLK" );
+
+    ss.initialize( 1 );
 
     // Clock generator for sclk
     clk_gen->enable( busy );
