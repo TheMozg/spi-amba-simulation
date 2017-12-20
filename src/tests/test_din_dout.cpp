@@ -14,7 +14,6 @@ void test_din_dout::read( int address ) {
   haddr.write( address );
   hwrite.write( 0 );
   wait( );
-  //hrdata.write( body );
   wait( );
 }
 

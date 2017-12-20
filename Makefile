@@ -6,14 +6,14 @@ SYSTEMC_THD_SRC_DIR := thirdparty/systemc
 SYSTEMC_THD_BLD_DIR := $(BUILD_DIR)/$(SYSTEMC_THD_SRC_DIR)-build
 SYSTEMC_THD_INS_DIR := $(BUILD_DIR)/$(SYSTEMC_THD_SRC_DIR)-install
 
-SYSTEMC_SRC_DIR     := src src/div_clk src/spi src/bus_ahb src/pmodjstk src/system src/din_dout src/periph_ctr src/tests
+SYSTEMC_SRC_DIR     := src src/div_clk src/spi src/bus_ahb src/pmodjstk src/system src/cpu src/din_dout src/tests src/spi_ahb # src/dig_ctr # (obsolete, but nice code)
 SYSTEMC_SPI_EXE     := $(BUILD_DIR)/$(TARGET)
 SYSTEMC_SPI_VCD     := $(BUILD_DIR)/$(TARGET).vcd
 SYSTEMC_SOURCES     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.cpp)) $(SYSTEMC_THD_INS_DIR)/lib-linux64/libsystemc.a
 SYSTEMC_HEADERS     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.h))
 
 CXX                 := g++
-CXXFLAGS            := -std=c++11 -g -Wall -Wextra -I$(SYSTEMC_THD_INS_DIR)/include $(foreach dir,$(SYSTEMC_SRC_DIR),-I$(dir)) -pthread -DDIN_DOUT_DEBUG # -DPMODJSTK_DEBUG # -DAHB_DEBUG
+CXXFLAGS            := -std=c++11 -g -Wall -Wextra -I$(SYSTEMC_THD_INS_DIR)/include $(foreach dir,$(SYSTEMC_SRC_DIR),-I$(dir)) -pthread -DSW_OUTPUT -DSPI_AHB_DEBUG #-DDIN_DOUT_DEBUG # -DPMODJSTK_DEBUG -DAHB_DEBUG
 
 .PHONY: all
 build: systemc

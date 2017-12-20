@@ -15,4 +15,5 @@
 * periph_ctr  -- peripheral controller (for PmodJSTK).
 * system      -- main device.
 * tests       -- device tests.
+* spi_ahb     -- SPI-AHB controller
 

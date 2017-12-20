@@ -8,6 +8,8 @@
 // Debug log macro
 //#define AHB_DEBUG
 
+#define AMBA_DEV_CNT dev_cnt
+
 // How many devices are interconnected by AHB bus
 const char dev_cnt = 3;
 

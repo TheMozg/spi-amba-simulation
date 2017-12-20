@@ -9,7 +9,6 @@
 #define DIN_DOUT_IN_REG   0x00000004
 #define DIN_DOUT_OUT_REG  0x00000008
 
-
 SC_MODULE( din_dout ) {
   sc_in<bool> hclk_i;
   sc_in<bool> hresetn_i;

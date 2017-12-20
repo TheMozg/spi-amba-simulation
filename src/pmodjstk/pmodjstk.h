@@ -21,7 +21,7 @@ SC_MODULE( pmodjstk ) {
   sc_out<bool> miso, busy;
 
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in;
-  sc_out<sc_uint<SPI_BIT_CAP> > data_out;
+  sc_out<sc_uint<SPI_BIT_CAP> > data_out { "data_out" };
 
   // last 8 bits of X
   sc_uint<8> x_1;
@@ -69,11 +69,11 @@ SC_MODULE( pmodjstk ) {
     
     fsm_state = JSTK_EMUL_WAIT_FIRST_BYTE;
 
-    x_1 = 0b10100101;
-    x_2 = 0b00000011;
+    x_1 = 0xAD;
+    x_2 = 0xDE;
 
-    y_1 = 0b10100101;
-    y_2 = 0b00000011;
+    y_1 = 0xDA;
+    y_2 = 0xDE;
 
     buttons = 0b00000111;
     

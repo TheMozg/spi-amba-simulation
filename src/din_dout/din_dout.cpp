@@ -57,7 +57,7 @@ sc_uint<32> din_dout::execute_read( sc_uint<16> addr ) {
 
 void din_dout::execute_write( sc_uint<16> addr, sc_uint<32> data ) {
 #ifdef DIN_DOUT_DEBUG
-  printf("DINDOUT write: addr: 0x%04X, data: 0x%08X\n", (unsigned short) addr, (uint32_t) data );
+  printf("DINDOUT write: addr: 0x%08X, data: 0x%08X\n", (unsigned short) addr, (uint32_t) data );
 #endif
   switch( addr ) {
     
