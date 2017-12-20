@@ -25,6 +25,22 @@ void dig_ctr::byte_select( ) {
 
 }
 
+/*void DinDout::user_input()
+{
+    switches = 0x7895;
+    printf("Switches new state: 0x%04X\n", (unsigned short) switches);
+
+    wait(100, SC_NS);
+
+    switches = 0x55AA;
+    printf("Switches new state: 0x%04X\n", (unsigned short) switches);
+
+    wait(100, SC_NS);
+
+    switches = 0x7744;
+    printf("Switches new state: 0x%04X\n", (unsigned short) switches);
+}*/
+
 void dig_ctr::dump_control( ) {
   main_reg.write( main_reg.read( ) | start << START_BIT_OFFSET | 
                                      ready << READY_BIT_OFFSET |

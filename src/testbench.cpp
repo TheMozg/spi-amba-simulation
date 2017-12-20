@@ -9,18 +9,18 @@ using namespace std;
 #include "test_bus.h"
 #include "test_spi.h"
 #include "test_jstk.h"
-#include "test_dig_ctr.h"
+#include "test_din_dout.h"
 
 #define TRACE_FILE "system"
 
 void bus_tb( );
 void spi_tb( );
 void jstk_tb( );
-void bus_dig_ctr( );
+void bus_din_dout( );
 
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
-  bus_dig_ctr( );
+  bus_din_dout( );
 //  bus_tb( );
 //  spi_tb( );
 //  jstk_tb( );
@@ -28,7 +28,7 @@ int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** ar
   return 0;
 }
 
-void bus_dig_ctr( ) {
+void bus_din_dout( ) {
   int i;
   
   // Main clock
@@ -41,8 +41,8 @@ void bus_dig_ctr( ) {
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> main_reg;
-  sc_signal<sc_uint<32> > ctrl_wires;
+  sc_signal<sc_uint<16>, SC_MANY_WRITERS> switches;
+  sc_signal<sc_uint<16>, SC_MANY_WRITERS> leds;
 
   // Connect interconnect bus
   bus_ahb bus( "BUS_INTER" );
@@ -58,7 +58,7 @@ void bus_dig_ctr( ) {
     bus.hreset[i]( hreset[i] );
   }
 
-  test_dig_ctr bus_t( "DIG_CTR_TEST" );
+  test_din_dout bus_t( "DIG_CTR_TEST" );
   bus_t.clk( clk_m );
   bus_t.hsel( hsel[0] );
   bus_t.hreset( hreset[0] );
@@ -66,8 +66,8 @@ void bus_dig_ctr( ) {
   bus_t.hwrite( hwrite );
   bus_t.hwdata( hwdata );
   bus_t.hrdata( hrdata );
-  bus_t.main_reg( main_reg );
-  bus_t.ctrl_wires( ctrl_wires );
+  bus_t.leds( leds );
+  bus_t.switches( switches );
   
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
@@ -80,14 +80,14 @@ void bus_dig_ctr( ) {
   sc_trace( wf, hwrite, "hwrite" );
   sc_trace( wf, hwdata, "hwdata" );
   sc_trace( wf, hrdata, "hrdata" );
-  sc_trace( wf, ctrl_wires, "ctrl_wires" );
-  sc_trace( wf, main_reg, "main_reg" );
   for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hsel[i], "hsel_" + to_string(i) );
   }
   for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hreset[i], "hreset_" + to_string(i) );
   }
+  sc_trace( wf, leds, "leds" );
+  sc_trace( wf, switches, "switches" );
 
   sc_start( );
 

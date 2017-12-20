@@ -35,6 +35,7 @@ void bus_ahb::amba_idle( ) {
     }
   }
 
+  reset_hsel( );
 }
 
 void bus_ahb::amba_write_address( ) {
@@ -68,13 +69,13 @@ void bus_ahb::fsm( ) {
   if( bus_state == AHB_IDLE ) amba_idle( );
 
   switch( bus_state ) {
+
     case AHB_WRITE_ADR:
       amba_write_address( );
       bus_state = AHB_WRITE_DATA;     
       break;
     
     case AHB_WRITE_DATA:
-      reset_hsel( );
       bus_state = AHB_IDLE;
       break;
 
@@ -84,7 +85,6 @@ void bus_ahb::fsm( ) {
       break;
 
     case AHB_READ_DATA:
-      reset_hsel( );
       bus_state = AHB_IDLE;
       break;
 
@@ -96,10 +96,11 @@ void bus_ahb::fsm( ) {
 void bus_ahb::dev_select( ) {
   sc_uint<dev_dev_addr_size> dev_prefix = haddr.read( ) >> dev_inner_addr_size;
 
-  for( int i = 0; i < dev_cnt; i++ ) { 
-    hsel[i] = ( dev_prefix == devs[i].prefix ) ? 1 : 0;
+  if( bus_state == AHB_IDLE ) {
+    for( int i = 0; i < dev_cnt; i++ ) { 
+      hsel[i] = ( dev_prefix == devs[i].prefix ) ? 1 : 0;
+    }
   }
-
 #ifdef AHB_DEBUG
   cout << "AHB DEVSEL: addr: " << hex << haddr.read( ) << endl;
   cout << "AHB DEVSEL: base addr: " << hex << dev_prefix << endl;
