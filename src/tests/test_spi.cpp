@@ -17,8 +17,10 @@ void test_spi::demo_send( ) {
   wait( );
   rst.write( 0 );
 
+  ss.write( 0 );
   test_send( 0b00110101, 0b01010011 );
   test_send( 0b10011001, 0b00001010 );
+  ss.write( 1 );
   test_send( 0b11011001, 0b10001010 );
   sc_stop( );
 }

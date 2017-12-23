@@ -25,11 +25,11 @@ void system_tb( );
 
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
-  system_tb( );
+//  system_tb( );
 //  spi_ahb( );
 //  bus_din_dout( );
 //  bus_tb( );
-//  spi_tb( );
+  spi_tb( );
 //  jstk_tb( );
 
   return 0;

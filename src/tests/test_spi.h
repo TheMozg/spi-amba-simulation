@@ -9,7 +9,8 @@ SC_MODULE( test_spi ) {
 
   sc_in<bool> clock;
   sc_inout<bool> miso, mosi, rst, ss, sclk;
-  sc_out<bool> start, busy_m, busy_s;
+  sc_out<bool> busy_m, busy_s;
+  sc_inout<bool> start;
 
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in_m;
   sc_inout<sc_uint<SPI_BIT_CAP> > data_out_m;
@@ -39,6 +40,7 @@ SC_MODULE( test_spi ) {
     s_spi->ss( ss );
     s_spi->sclk( sclk );
     s_spi->busy( busy_s );
+    s_spi->start( start );
 
     s_spi->data_out( data_out_s );
     s_spi->data_in( data_in_s );

@@ -35,6 +35,7 @@ void spi_s::tx( ) {
 void spi::reset( ) {
   tr_ctr = 0;
   busy.write( 0 );
+  shift_reg = 0;
 }
 
 // End transaction routine
@@ -42,7 +43,7 @@ void spi_m::end_transaction( ) {
   reset( );
 
   mosi.write( 0 );
-  ss.write( 1 );
+  //ss.write( 1 );
   fsm_state = SPI_IDLE;
 }
 
@@ -91,9 +92,10 @@ void spi_s::fsm_wait_sclk_1( ) {
 
 void spi_m::fsm_idle( ) {
   if( start ) {
+   // start.write( 0 );
     data_out.write( 0 ); 
     busy.write( 1 );
-    ss.write( 0 );
+   // ss.write( 0 );
     shift_reg = data_in.read( );
     tx( );
     fsm_state = SPI_WAIT_SCLK_1;
@@ -101,7 +103,9 @@ void spi_m::fsm_idle( ) {
 }
 
 void spi_s::fsm_idle( ) {
-  if( !ss ) {
+  if( start && !ss ) {
+   // start.write( 0 );
+  //if( sclk ) {
     data_out.write( 0 ); 
     busy.write( 1 );
     shift_reg = data_in.read( );
