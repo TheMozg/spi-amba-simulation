@@ -5,9 +5,6 @@
 #pragma once
 #include "systemc.h"
 
-// Debug log macro
-//#define AHB_DEBUG
-
 #define AMBA_DEV_CNT dev_cnt
 
 // How many devices are interconnected by AHB bus
@@ -37,14 +34,13 @@ static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
 SC_MODULE( bus_ahb ) {
   // AHB ports
-  sc_in<bool>     hclk;
+  sc_in<bool>     hclk, hreset;
   sc_inout<bool>  hwrite;
   sc_out<bool>    hsel[ dev_cnt ];
-  sc_out<bool>    hreset[ dev_cnt ];
 
   sc_inout<sc_uint<32> >  haddr;
   sc_out<sc_uint<32> >    hwdata;
-  sc_in<sc_uint<32> >     hrdata;
+  sc_in<sc_uint<32> >     hrdata[ dev_cnt ];
 
   // Transaction FSM states
   enum {

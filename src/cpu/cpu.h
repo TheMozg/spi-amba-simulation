@@ -1,12 +1,13 @@
 #pragma once
 #include "systemc.h"
+#include "bus_ahb.h"
 
 SC_MODULE( cpu ) {
   
   sc_in<bool> hclk;
   sc_out<sc_uint<32> >  haddr;
   sc_out<sc_uint<32> >  hwdata;
-  sc_in<sc_uint<32> >   hrdata;
+  sc_in<sc_uint<32> >   hrdata[ AMBA_DEV_CNT ];
   sc_out<bool>          hwrite;
 
   void software( );

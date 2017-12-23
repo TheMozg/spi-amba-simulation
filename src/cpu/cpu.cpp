@@ -21,9 +21,9 @@ uint32_t cpu::read( uint32_t address ) {
   wait( );    
   wait( );    
 #ifdef SW_OUTPUT
-  printf( "CPU read: 0x%08X at 0x%08X\n", (uint32_t) hrdata.read( ), address );
+  printf( "CPU read: 0x%08X at 0x%08X\n", (uint32_t) hrdata[0].read( ), address );
 #endif
-  return hrdata.read( );
+  return hrdata[0].read( );
 }    
 
 void cpu::sleep( uint32_t cycles ) {

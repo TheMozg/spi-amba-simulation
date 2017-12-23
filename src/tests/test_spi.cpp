@@ -22,6 +22,9 @@ void test_spi::demo_send( ) {
   test_send( 0b10011001, 0b00001010 );
   ss.write( 1 );
   test_send( 0b11011001, 0b10001010 );
+  ss.write( 0 );
+  for( int i = 0; i < 40; i++ ) wait( );
+
   sc_stop( );
 }
 

@@ -41,11 +41,11 @@ SC_MODULE( main_sys ) {
   sc_signal<bool> hclk                    { "hclk" };
   sc_signal<bool, SC_MANY_WRITERS> hwrite { "hwrite" };
   sc_signal<bool, SC_MANY_WRITERS> hsel[ dev_cnt ]; 
-  sc_signal<bool> hreset[ dev_cnt ];
+  sc_signal<bool> hreset;
 
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr  { "haddr" };
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata { "hwdata" };
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata { "hrdata" };
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata[ AMBA_DEV_CNT ];
 
   // Leds and switches wires for digital io controller
   sc_signal<sc_uint<16> > switches  { "switches" }; 
@@ -80,27 +80,30 @@ SC_MODULE( main_sys ) {
         mbus->hsel[i]( hsel[i] );
       }
       for( int i = 0; i < AMBA_DEV_CNT; i++ ) {
-        mbus->hreset[i]( hreset[i] );
+        mbus->hrdata[i]( hrdata[i] );
       }
+      mbus->hreset( hreset );
       mbus->haddr( haddr );
       mbus->hwdata( hwdata );
-      mbus->hrdata( hrdata );
+      mbus->hreset( hreset );
 
     // CPU setup
     mcpu = new cpu( "CPU" );
       mcpu->hclk( *mclk );
       mcpu->haddr( haddr );
       mcpu->hwdata( hwdata );
-      mcpu->hrdata( hrdata );
+      for( int i = 0; i < AMBA_DEV_CNT; i++ ) {
+        mcpu->hrdata[i]( hrdata[i] );
+      }
       mcpu->hwrite( hwrite );
 
     // Digital controller setup
     mdin_dout = new din_dout( "DIN_DOUT" );
       mdin_dout->hclk_i( *mclk );
-      mdin_dout->hresetn_i( hreset[0] );
+      mdin_dout->hresetn_i( hreset );
       mdin_dout->haddr_bi( haddr );
       mdin_dout->hwdata_bi( hwdata );
-      mdin_dout->hrdata_bo( hrdata );
+      mdin_dout->hrdata_bo( hrdata[0] );
       mdin_dout->hwrite_i( hwrite );
       mdin_dout->hsel_i( hsel[0] );
       mdin_dout->switches( switches );
@@ -111,9 +114,9 @@ SC_MODULE( main_sys ) {
       mspi_ahb->clk( *mclk );
       mspi_ahb->hwrite( hwrite );
       mspi_ahb->hwdata( hwdata );
-      mspi_ahb->hrdata( hrdata );
+      mspi_ahb->hrdata( hrdata[1] );
       mspi_ahb->haddr( haddr );
-      mspi_ahb->hreset( hreset[1] );
+      mspi_ahb->hreset( hreset );
       mspi_ahb->hsel( hsel[1] );
       mspi_ahb->start( start );
       mspi_ahb->ss( ss );
@@ -130,7 +133,7 @@ SC_MODULE( main_sys ) {
       mjstk->sclk( sclk );
       mjstk->mosi( mosi );
       mjstk->miso( miso );
-      mjstk->rst( hreset[1] );
+      mjstk->rst( hreset );
       mjstk->ss( ss );
       mjstk->busy( jstk_busy );
       mjstk->data_out( jstk_data_out );
