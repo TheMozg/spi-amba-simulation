@@ -103,7 +103,7 @@ struct spi_m : public spi {
     ss.initialize( 1 );
 
     // Clock generator for sclk
-    clk_gen->enable( busy );
+    clk_gen->n_enable( ss );
     clk_gen->clock( clk );
     clk_gen->qclk( sclk );
 
