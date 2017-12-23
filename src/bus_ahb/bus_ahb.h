@@ -42,6 +42,12 @@ SC_MODULE( bus_ahb ) {
   sc_out<sc_uint<32> >    hwdata      { "hwdata" };
   sc_out<sc_uint<32> >    hrdata_out  { "hrdata_out" };
   sc_in<sc_uint<32> >     hrdata_in[ dev_cnt ];
+  
+  // Address buffer
+  sc_uint<dev_dev_addr_size+dev_inner_addr_size> buf_haddr;
+
+  // Address index buffer to select HRDATAx line
+  uint32_t buf_index;
 
   // Transaction FSM states
   enum {
@@ -49,11 +55,16 @@ SC_MODULE( bus_ahb ) {
     AHB_READ_ADR,
     AHB_READ_DATA,
     AHB_WRITE_ADR,
-    AHB_WRITE_DATA
+    AHB_WRITE_DATA,
+    AHB_DONE
   } bus_state;
 
   SC_CTOR( bus_ahb ): hclk( "hclk" ), hwrite( "hwrite" ) {
     init_dev( );
+
+    buf_index = 0;
+    buf_haddr = 0;
+
     bus_state = AHB_IDLE;
 
     SC_METHOD( fsm );

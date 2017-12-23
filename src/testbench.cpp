@@ -245,7 +245,10 @@ void bus_tb( ) {
   bus_t.hwrite( hwrite );
   bus_t.hwdata( hwdata );
   bus_t.hrdata( hrdata_out );
-  
+  for( i = 0; i < dev_cnt; i++ ) {
+    bus_t.hrdata_in[i]( hrdata_in[i] );
+  }
+
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
 
@@ -256,6 +259,7 @@ void bus_tb( ) {
   sc_trace( wf, haddr, "haddr" );
   sc_trace( wf, hwrite, "hwrite" );
   sc_trace( wf, hwdata, "hwdata" );
+  sc_trace( wf, hrdata_out, "hrdata_out" );
   sc_trace( wf, hreset, "hreset" );
   for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hsel[i], "hsel_" + to_string(i) );
