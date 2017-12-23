@@ -92,10 +92,8 @@ void spi_s::fsm_wait_sclk_1( ) {
 
 void spi_m::fsm_idle( ) {
   if( start ) {
-   // start.write( 0 );
     data_out.write( 0 ); 
     busy.write( 1 );
-   // ss.write( 0 );
     shift_reg = data_in.read( );
     tx( );
     fsm_state = SPI_WAIT_SCLK_1;
@@ -104,8 +102,6 @@ void spi_m::fsm_idle( ) {
 
 void spi_s::fsm_idle( ) {
   if( start && !ss ) {
-   // start.write( 0 );
-  //if( sclk ) {
     data_out.write( 0 ); 
     busy.write( 1 );
     shift_reg = data_in.read( );
