@@ -38,9 +38,10 @@ SC_MODULE( bus_ahb ) {
   sc_inout<bool>  hwrite;
   sc_out<bool>    hsel[ dev_cnt ];
 
-  sc_inout<sc_uint<32> >  haddr;
-  sc_out<sc_uint<32> >    hwdata;
-  sc_in<sc_uint<32> >     hrdata[ dev_cnt ];
+  sc_inout<sc_uint<32> >  haddr       { "haddr" };
+  sc_out<sc_uint<32> >    hwdata      { "hwdata" };
+  sc_out<sc_uint<32> >    hrdata_out  { "hrdata_out" };
+  sc_in<sc_uint<32> >     hrdata_in[ dev_cnt ];
 
   // Transaction FSM states
   enum {
@@ -67,7 +68,7 @@ SC_MODULE( bus_ahb ) {
 
 private:
   void init_dev( );   // Register devices on the bus
-  void dev_select( ); // Select slave device
+  void dev_select( ); // Select slave device (decoder)
   void reset_hsel( ); // Reset device select lines
   void amba_idle( );  // Start read/write transaction from idle state
   void amba_write_address( ); // Address phase of write transaction

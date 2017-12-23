@@ -4,37 +4,37 @@
 using namespace std;
 
 #include "systemc.h"
-#include "spi.h"
+//#include "spi.h"
 #include "bus_ahb.h"
-#include "spi_ahb.h"
+//#include "spi_ahb.h"
 #include "test_bus.h"
-#include "test_spi.h"
-#include "test_jstk.h"
-#include "test_din_dout.h"
-#include "test_spi_ahb.h"
-#include "system.h"
+//#include "test_spi.h"
+//#include "test_jstk.h"
+//#include "test_din_dout.h"
+//#include "test_spi_ahb.h"
+//#include "system.h"
 
 #define TRACE_FILE "system"
 
-void bus_tb( );
+void bus_tb( );/*
 void spi_tb( );
 void jstk_tb( );
 void bus_din_dout( );
 void spi_ahb( );
 void system_tb( );
-
+*/
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
 //  system_tb( );
 //  spi_ahb( );
 //  bus_din_dout( );
-//  bus_tb( );
-  spi_tb( );
+  bus_tb( );
+//  spi_tb( );
 //  jstk_tb( );
 
   return 0;
 }
-
+/*
 void system_tb( ) {
   
   main_sys* sys = new main_sys( "MAIN_SYSTEM" );
@@ -78,9 +78,9 @@ void system_tb( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-
+*//*
 void spi_ahb( ) {
-/*
+
   // Main clock
   sc_clock clk_m ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
 
@@ -139,7 +139,7 @@ void spi_ahb( ) {
 
   sc_start( );
 
-  sc_close_vcd_trace_file( wf );*/
+  sc_close_vcd_trace_file( wf );
 
 }
 
@@ -208,7 +208,7 @@ void bus_din_dout( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-
+*/
 void bus_tb( ) {
   int i;
   
@@ -220,8 +220,9 @@ void bus_tb( ) {
   sc_signal<bool, SC_MANY_WRITERS> hsel[ dev_cnt ];
   sc_signal<bool, SC_MANY_WRITERS> hreset;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_out;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata[ AMBA_DEV_CNT ];
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_in[ AMBA_DEV_CNT ];
 
   // Connect interconnect bus
   bus_ahb bus( "BUS_INTER" );
@@ -230,11 +231,12 @@ void bus_tb( ) {
   bus.hwrite( hwrite );
   bus.hwdata( hwdata );
   bus.hreset( hreset );
+  bus.hrdata_out( hrdata_out );
   for( i = 0; i < dev_cnt; i++ ) {
     bus.hsel[i]( hsel[i] );
   }
   for( i = 0; i < dev_cnt; i++ ) {
-    bus.hrdata[i]( hrdata[i] );
+    bus.hrdata_in[i]( hrdata_in[i] );
   }
 
   test_bus bus_t( "BUS_TEST" );
@@ -242,6 +244,7 @@ void bus_tb( ) {
   bus_t.haddr( haddr ); 
   bus_t.hwrite( hwrite );
   bus_t.hwdata( hwdata );
+  bus_t.hrdata( hrdata_out );
   
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
@@ -258,7 +261,7 @@ void bus_tb( ) {
     sc_trace( wf, hsel[i], "hsel_" + to_string(i) );
   }
   for( i = 0; i < dev_cnt; i++ ) {
-    sc_trace( wf, hrdata[i], "hrdata_" + to_string(i) );
+    sc_trace( wf, hrdata_in[i], "hrdata_in_" + to_string(i) );
   }
 
   sc_start( );
@@ -266,7 +269,7 @@ void bus_tb( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-
+/*
 void spi_tb( ) {
   
   // Main clock
@@ -392,4 +395,4 @@ void jstk_tb( ) {
 
   sc_start( );
 }
-
+*/
