@@ -20,8 +20,6 @@ void bus_ahb::reset_hsel( ) {
 
 void bus_ahb::amba_idle( ) {
 
-  hrdata_out.write( hrdata_in[buf_index].read( ) );
-
 #ifdef AHB_DEBUG
   cout << "AHB IDLE: " << bus_state << endl;
 #endif
@@ -66,6 +64,7 @@ void bus_ahb::fsm( ) {
       break;
 
     case AHB_READ_DATA:
+      hrdata_out.write( hrdata_in[buf_index].read( ) );
       amba_idle( );
       bus_state = AHB_IDLE;
       break;
