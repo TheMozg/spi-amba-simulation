@@ -22,7 +22,8 @@ void test_bus::demo( ) {
 
   wait( );
   write( 0x40000ACC, 0xDEADBEEF );
-  write( 0x40010CAD, 0xBEEFDEAD );
+  write( 0x40001CAD, 0xBEEFDEAD );
+  write( 0x40101CAD, 0xBEEFDEAD );
  /* wait( );
   read( 0x40000ACC, 0xDEADBEEF );
   read( 0x40001ACC, 0xADBEEFAA );
