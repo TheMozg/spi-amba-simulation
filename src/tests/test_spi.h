@@ -10,7 +10,7 @@ SC_MODULE( test_spi ) {
   sc_in<bool> clock;
   sc_inout<bool> miso, mosi, rst, ss, sclk;
   sc_out<bool> busy_m, busy_s;
-  sc_inout<bool> start;
+  sc_out<bool> start;
 
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in_m;
   sc_inout<sc_uint<SPI_BIT_CAP> > data_out_m;
