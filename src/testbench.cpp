@@ -4,11 +4,11 @@
 using namespace std;
 
 #include "systemc.h"
-//#include "spi.h"
+#include "spi.h"
 #include "bus_ahb.h"
 //#include "spi_ahb.h"
 #include "test_bus.h"
-//#include "test_spi.h"
+#include "test_spi.h"
 //#include "test_jstk.h"
 #include "test_din_dout.h"
 //#include "test_spi_ahb.h"
@@ -278,7 +278,7 @@ void bus_tb( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-/*
+
 void spi_tb( ) {
   
   // Main clock
@@ -341,7 +341,7 @@ void spi_tb( ) {
 
   sc_start( );
 }
-
+/*
 void jstk_tb( ) {
   
   // Main clock
