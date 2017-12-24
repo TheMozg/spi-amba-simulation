@@ -26,11 +26,11 @@ void bus_din_dout( );
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
 //  system_tb( );
-//  spi_ahb( );
+  spi_ahb( );
 //  bus_din_dout( );
 //  bus_tb( );
 //  spi_tb( );
-  jstk_tb( );
+//  jstk_tb( );
 
   return 0;
 }
@@ -82,64 +82,83 @@ void system_tb( ) {
 void spi_ahb( ) {
 
   // Main clock
- /* sc_clock clk_m ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
+  sc_clock clk_m ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
 
-  sc_signal<bool, SC_MANY_WRITERS> miso;
-  sc_signal<bool, SC_MANY_WRITERS> js_busy;
-  sc_signal<bool, SC_MANY_WRITERS> sa_busy;
-  sc_signal<bool, SC_MANY_WRITERS> sa_start;
-  sc_signal<bool, SC_MANY_WRITERS> mosi, sclk, ss;
-  sc_signal<sc_uint<SPI_BIT_CAP>, SC_MANY_WRITERS> data_spi;
-  sc_signal<sc_uint<SPI_BIT_CAP>, SC_MANY_WRITERS> data_dummy;
-  sc_signal<bool, SC_MANY_WRITERS> hwrite, hsel;
-  sc_signal<bool, SC_MANY_WRITERS> hreset; // To send it to SPI rst ports
+  sc_signal<bool> start;
+  sc_signal<bool> sa_busy;
+  sc_signal<bool> js_busy;
 
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS >  haddr;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS>  hwdata;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS>  hrdata[ AMBA_DEV_CNT ];
+  sc_signal<bool> miso;
+  sc_signal<bool> mosi;
+  sc_signal<bool> ss;
+  sc_signal<bool> rst;
+  sc_signal<bool> sclk;
+  sc_signal<bool> hsel;
 
-  // Connect interconnect bus
-  test_spi_ahb bus( "BUS_AHB_SPI" );
-  bus.clk( clk_m );
-  bus.miso( miso );
-  bus.mosi( mosi );
-  bus.data_spi( data_spi );
-  bus.hwrite( hwrite );
-  bus.hsel( hsel );
-  bus.hreset( hreset );
-  bus.haddr( haddr );
-  bus.hwdata( hwdata );
-  bus.hrdata( hrdata );
-  bus.sclk( sclk );
-  bus.ss( ss );
-  bus.js_busy( js_busy );
-  bus.sa_busy( sa_busy );
-  bus.sa_start( sa_start );
-  bus.data_dummy( data_dummy );
+  sc_signal<sc_uint<8> > sa_data_out;
+  sc_signal<sc_uint<8> > sa_data_in;
 
+  sc_signal<sc_uint<8> > js_data_out;
+  sc_signal<sc_uint<8> > js_data_in;
+
+  sc_signal<bool> hwrite;
+  sc_signal<bool> n_hreset;
+
+  sc_signal<sc_uint<32> > haddr;
+  sc_signal<sc_uint<32> > hwdata;
+  sc_signal<sc_uint<32> > hrdata;
+
+  test_spi_ahb bus_t( "SPI_AHB_TEST" );
+    bus_t.clk( clk_m );
+    bus_t.start( start );
+    bus_t.sa_busy( sa_busy );
+    bus_t.miso( miso );
+    bus_t.mosi( mosi );
+    bus_t.sa_data_out( sa_data_out );
+    bus_t.sa_data_in( sa_data_in );
+    bus_t.js_data_out( js_data_out );
+    bus_t.js_data_in( js_data_in );
+    bus_t.hwrite( hwrite );
+    bus_t.n_hreset( n_hreset );
+    bus_t.haddr( haddr );
+    bus_t.hwdata( hwdata );
+    bus_t.hrdata( hrdata );
+    bus_t.ss( ss );
+    bus_t.sclk( sclk );
+    bus_t.hsel( hsel );
+    bus_t.js_busy( js_busy );
+    bus_t.rst( rst );
+
+  /*
+  for( int i = 0; i < dev_cnt; i++ ) {
+    bus.hrdata_in[i]( hrdata_in[i] );
+  }*/
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
 
-  // Dump main clock
   sc_trace( wf, clk_m, "clk_m" );
-  sc_trace( wf, sclk, "sclk" );
-
-  // Dump AMBA signals
-  sc_trace( wf, haddr, "haddr" );
-  sc_trace( wf, hwrite, "hwrite" );
-  sc_trace( wf, hwdata, "hwdata" );
-  sc_trace( wf, hrdata, "hrdata" );
-
-  sc_trace( wf, ss, "ss" );
+  sc_trace( wf, start, "start" );
+  sc_trace( wf, sa_busy, "sa_busy" );
   sc_trace( wf, miso, "miso" );
   sc_trace( wf, mosi, "mosi" );
-  sc_trace( wf, data_spi, "data_spi" );
+  sc_trace( wf, sa_data_out, "sa_data_out" );
+  sc_trace( wf, sa_data_in, "sa_data_in" );
+  sc_trace( wf, js_data_out, "js_data_out" );
+  sc_trace( wf, js_data_in, "js_data_in" );
+  sc_trace( wf, hwrite, "hwrite" );
+  sc_trace( wf, n_hreset, "n_hreset" );
+  sc_trace( wf, haddr, "haddr" );
+  sc_trace( wf, hwdata, "hwdata" );
+  sc_trace( wf, hrdata, "hrdata" );
+  sc_trace( wf, ss, "ss" );
+  sc_trace( wf, sclk, "sclk" );
   sc_trace( wf, hsel, "hsel" );
-  sc_trace( wf, hreset, "hreset" );
+  sc_trace( wf, js_busy, "js_busy" );
+  sc_trace( wf, rst, "rst" );
 
   sc_start( );
 
-  sc_close_vcd_trace_file( wf );*/
+  sc_close_vcd_trace_file( wf );
 
 }
 

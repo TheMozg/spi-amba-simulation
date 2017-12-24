@@ -20,8 +20,8 @@ SC_MODULE( pmodjstk ) {
   sc_in<bool> clk, sclk, mosi, rst, ss;
   sc_out<bool> miso, busy;
 
-  sc_inout<sc_uint<SPI_BIT_CAP> > data_in;
-  sc_out<sc_uint<SPI_BIT_CAP> > data_out { "data_out" };
+  sc_out<sc_uint<SPI_BIT_CAP> > data_in;
+  sc_inout<sc_uint<SPI_BIT_CAP> > data_out { "data_out" };
 
   sc_uint<8> counter;
 
