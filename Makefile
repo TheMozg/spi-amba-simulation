@@ -13,7 +13,7 @@ SYSTEMC_SOURCES     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.cpp)
 SYSTEMC_HEADERS     := $(foreach dir,$(SYSTEMC_SRC_DIR),$(wildcard $(dir)/*.h))
 
 CXX                 := g++
-CXXFLAGS            := -std=c++11 -g -Wall -Wextra -I$(SYSTEMC_THD_INS_DIR)/include $(foreach dir,$(SYSTEMC_SRC_DIR),-I$(dir)) -pthread -DSPI_AHB_DEBUG -DAHB_DEBUG #-DDIN_DOUT_DEBUG -DSW_OUTPUT # -DPMODJSTK_DEBUG
+CXXFLAGS            := -std=c++11 -g -Wall -Wextra -I$(SYSTEMC_THD_INS_DIR)/include $(foreach dir,$(SYSTEMC_SRC_DIR),-I$(dir)) -pthread -DPMODJSTK_DEBUG -DSPI_AHB_DEBUG -DAHB_DEBUG #-DDIN_DOUT_DEBUG -DSW_OUTPUT # 
 
 .PHONY: all
 build: systemc
@@ -54,4 +54,3 @@ clean/thirdparty: clean/$(SYSTEMC_THD_SRC_DIR)
 clean/$(SYSTEMC_THD_SRC_DIR):
 	rm -rf $(SYSTEMC_THD_BLD_DIR)
 	rm -rf $(SYSTEMC_THD_INS_DIR)
-

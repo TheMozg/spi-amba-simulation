@@ -23,6 +23,8 @@ SC_MODULE( pmodjstk ) {
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in;
   sc_out<sc_uint<SPI_BIT_CAP> > data_out { "data_out" };
 
+  sc_uint<8> counter;
+
   // last 8 bits of X
   sc_uint<8> x_1;
 
@@ -40,19 +42,6 @@ SC_MODULE( pmodjstk ) {
 
   void emul( );
 
-  enum {
-    JSTK_EMUL_WAIT_FIRST_BYTE,
-    JSTK_EMUL_WAIT_SECOND_BYTE,
-    JSTK_EMUL_WAIT_THIRD_BYTE,
-    JSTK_EMUL_WAIT_FOURTH_BYTE,
-    JSTK_EMUL_WAIT_FIFTH_BYTE,
-    JSTK_EMUL_WAIT_FIRST_BYTE_END,
-    JSTK_EMUL_WAIT_SECOND_BYTE_END,
-    JSTK_EMUL_WAIT_THIRD_BYTE_END,
-    JSTK_EMUL_WAIT_FOURTH_BYTE_END,
-    JSTK_EMUL_WAIT_FIFTH_BYTE_END
-  } fsm_state;
-
   SC_CTOR( pmodjstk ) {
     spi = new spi_s( "PMODJSTK_SPI" );
     spi->clk( clk );
@@ -67,18 +56,17 @@ SC_MODULE( pmodjstk ) {
     spi->data_in( data_in );
     spi->data_out( data_out );
     
-    fsm_state = JSTK_EMUL_WAIT_FIRST_BYTE;
+    x_1 = 0b10101010;
+    x_2 = 0b00000001;
 
-    x_1 = 0xBABA;
-    x_2 = 0x0001;
+    y_1 = 0b00110011;
+    y_2 = 0b00000010;
 
-    y_1 = 0xD1C5;
-    y_2 = 0x0002;
-
-    buttons = 0b00000111;
+    buttons = 0b00000101;
     
+    counter = 0;
     SC_METHOD( emul );
-    sensitive << clk.pos( ) 
+    sensitive << sclk.pos( ) 
               << ss.neg( ) 
               << ss.pos( ) 
               << rst.pos( );
@@ -89,4 +77,3 @@ SC_MODULE( pmodjstk ) {
   }
 
 };
-
