@@ -16,6 +16,9 @@ SC_MODULE( cpu ) {
   uint32_t write( uint32_t address, uint32_t body );
   uint32_t read( uint32_t address );
 
+  // Read data from PmodJSTK
+  uint32_t grab_jstk( );
+
   // Sleep for N cycles
   void sleep( uint32_t cycles );
    
