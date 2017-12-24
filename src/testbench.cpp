@@ -29,8 +29,8 @@ int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** ar
 //  spi_ahb( );
 //  bus_din_dout( );
 //  bus_tb( );
-  spi_tb( );
-//  jstk_tb( );
+//  spi_tb( );
+  jstk_tb( );
 
   return 0;
 }
@@ -403,4 +403,3 @@ void jstk_tb( ) {
 
   sc_start( );
 }
-
