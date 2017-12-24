@@ -65,6 +65,9 @@ SC_MODULE( bus_ahb ) {
     buf_haddr = 0;
 
     bus_state = AHB_IDLE;
+    
+    SC_METHOD( hrdata_multiplexer );
+    sensitive << hrdata_in[0] << hrdata_in[1] << hrdata_in[2];
 
     SC_METHOD( fsm );
     sensitive << hclk.pos( ) << hreset.pos( );
@@ -83,5 +86,5 @@ private:
   void amba_idle( );  // Start read/write transaction from idle state
   void amba_write_address( ); // Address phase of write transaction
   void amba_read_address( );  // Address phase of read transaction
+  void hrdata_multiplexer( );
 };
-

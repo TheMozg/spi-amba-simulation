@@ -70,7 +70,6 @@ void bus_ahb::fsm( ) {
       break;
 
     case AHB_READ_DATA:
-      hrdata_out.write( hrdata_in[buf_index].read( ) );
       amba_idle( );
       bus_state = AHB_IDLE;
       break;
@@ -79,6 +78,10 @@ void bus_ahb::fsm( ) {
     default:
       break;
   } 
+}
+
+void bus_ahb::hrdata_multiplexer( ) {
+    hrdata_out.write( hrdata_in[buf_index].read());
 }
  
 void bus_ahb::dev_select( ) {
@@ -99,4 +102,3 @@ void bus_ahb::dev_select( ) {
 #endif
 
 }
-
