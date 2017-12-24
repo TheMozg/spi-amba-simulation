@@ -51,6 +51,7 @@ void cpu::software( ) {
   wait( );
   read( DD_OUT );
   wait( );
+
   puts( "-- din_dout testing done" );
 
   sleep( 20 );
