@@ -36,6 +36,9 @@ void test_bus::demo( ) {
   read( 0x40001ACC, 0xEADBEEED, 2 );
   wait( );
   hrdata_in[2].write( 0xDEADBEEF );
+  hrdata_in[1].write( 0xDEADBEEF );
+  wait( );
+  wait( );
   wait( );
   write( 0x40000ACC, 0xDEADBEEF );
   write( 0x40101CAD, 0xBEEFDEAD );

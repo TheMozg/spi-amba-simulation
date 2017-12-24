@@ -5,7 +5,7 @@ void din_dout::bus_slave( ) {
   static bool wr_flag = false;
   static sc_uint<32> wr_addr = 0;
   
-  if ( hresetn_i.read( ) ) {
+  if ( !n_hreset_i.read( ) ) {
     wr_flag = false;
     wr_addr = 0;
     

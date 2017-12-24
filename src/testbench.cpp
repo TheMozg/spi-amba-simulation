@@ -16,20 +16,20 @@ using namespace std;
 
 #define TRACE_FILE "system"
 
-void bus_tb( );/*
+void bus_tb( );
 void spi_tb( );
-void jstk_tb( );
+//void jstk_tb( );
 void spi_ahb( );
-void system_tb( );
-*/
+//void system_tb( );
+
 void bus_din_dout( );
 
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
 //  system_tb( );
 //  spi_ahb( );
-  bus_din_dout( );
-//  bus_tb( );
+//  bus_din_dout( );
+  bus_tb( );
 //  spi_tb( );
 //  jstk_tb( );
 
@@ -142,8 +142,8 @@ void spi_ahb( ) {
 
   sc_close_vcd_trace_file( wf );
 
-}
-*/
+}*/
+
 void bus_din_dout( ) {
   int i;
   

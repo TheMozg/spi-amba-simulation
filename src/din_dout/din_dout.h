@@ -11,7 +11,7 @@
 
 SC_MODULE( din_dout ) {
   sc_in<bool> hclk_i;
-  sc_in<bool> hresetn_i;
+  sc_in<bool> n_hreset_i;
   sc_in<sc_uint<32> >  haddr_bi;
   sc_in<sc_uint<32> >  hwdata_bi;
   sc_out<sc_uint<32> > hrdata_bo  { "hrdata_bo" };
@@ -23,7 +23,7 @@ SC_MODULE( din_dout ) {
   
   SC_CTOR( din_dout ) {
     SC_METHOD( bus_slave );
-    sensitive << hclk_i.pos( ) << hresetn_i.pos( );
+    sensitive << hclk_i.pos( ) << n_hreset_i.neg( );
   }
   
   void set_base_address( sc_uint<32> base_addr ) {

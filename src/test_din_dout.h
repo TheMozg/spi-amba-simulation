@@ -23,9 +23,11 @@ SC_MODULE( test_din_dout ) {
     dig->haddr_bi( haddr );
     dig->hwdata_bi( hwdata );
     dig->hrdata_bo( hrdata );
-    dig->hresetn_i( hreset );
+    dig->n_hreset_i( hreset );
     dig->leds( leds );
     dig->switches( switches );
+
+    hreset.initialize( 1 );
 
     SC_THREAD( demo );
     sensitive << clk.pos( );
