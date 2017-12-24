@@ -41,11 +41,12 @@ SC_MODULE( main_sys ) {
   sc_signal<bool> hclk                    { "hclk" };
   sc_signal<bool, SC_MANY_WRITERS> hwrite { "hwrite" };
   sc_signal<bool, SC_MANY_WRITERS> hsel[ dev_cnt ]; 
-  sc_signal<bool> hreset;
+  sc_signal<bool> n_hreset;
 
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr  { "haddr" };
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata { "hwdata" };
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata[ AMBA_DEV_CNT ];
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr       { "haddr" };
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata      { "hwdata" };
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_out  { "hrdata_out" };
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_in[ AMBA_DEV_CNT ];
 
   // Leds and switches wires for digital io controller
   sc_signal<sc_uint<16> > switches  { "switches" }; 
@@ -71,6 +72,7 @@ SC_MODULE( main_sys ) {
     
     // Master clock setup
     mclk = new sc_clock( "mclk", 10, SC_NS, 0.5, 10, SC_NS, true );
+    n_hreset = 1;
 
     // AMBA AHB bus setup
     mbus = new bus_ahb( "BUS_AHB" );
@@ -80,43 +82,41 @@ SC_MODULE( main_sys ) {
         mbus->hsel[i]( hsel[i] );
       }
       for( int i = 0; i < AMBA_DEV_CNT; i++ ) {
-        mbus->hrdata[i]( hrdata[i] );
+        mbus->hrdata_in[i]( hrdata_in[i] );
       }
-      mbus->hreset( hreset );
+      mbus->n_hreset( n_hreset );
       mbus->haddr( haddr );
+      mbus->hrdata_out( hrdata_out );
       mbus->hwdata( hwdata );
-      mbus->hreset( hreset );
 
     // CPU setup
     mcpu = new cpu( "CPU" );
       mcpu->hclk( *mclk );
       mcpu->haddr( haddr );
       mcpu->hwdata( hwdata );
-      for( int i = 0; i < AMBA_DEV_CNT; i++ ) {
-        mcpu->hrdata[i]( hrdata[i] );
-      }
+      mcpu->hrdata( hrdata_out );
       mcpu->hwrite( hwrite );
 
     // Digital controller setup
     mdin_dout = new din_dout( "DIN_DOUT" );
       mdin_dout->hclk_i( *mclk );
-      mdin_dout->hresetn_i( hreset );
+      mdin_dout->n_hreset_i( n_hreset );
       mdin_dout->haddr_bi( haddr );
       mdin_dout->hwdata_bi( hwdata );
-      mdin_dout->hrdata_bo( hrdata[0] );
+      mdin_dout->hrdata_bo( hrdata_in[0] );
       mdin_dout->hwrite_i( hwrite );
       mdin_dout->hsel_i( hsel[0] );
       mdin_dout->switches( switches );
       mdin_dout->leds( leds );
 
     // Peripheral controller setup
-    mspi_ahb = new spi_ahb( "SPI_AHB" );
+    /*mspi_ahb = new spi_ahb( "SPI_AHB" );
       mspi_ahb->clk( *mclk );
       mspi_ahb->hwrite( hwrite );
       mspi_ahb->hwdata( hwdata );
       mspi_ahb->hrdata( hrdata[1] );
       mspi_ahb->haddr( haddr );
-      mspi_ahb->hreset( hreset );
+      mspi_ahb->n_hreset( n_hreset );
       mspi_ahb->hsel( hsel[1] );
       mspi_ahb->start( start );
       mspi_ahb->ss( ss );
@@ -138,7 +138,7 @@ SC_MODULE( main_sys ) {
       mjstk->busy( jstk_busy );
       mjstk->data_out( jstk_data_out );
       mjstk->data_in( jstk_data_in );
-    
+    */
     SC_THREAD( stimuli );
     sensitive << *mclk << mrst;
     

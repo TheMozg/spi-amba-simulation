@@ -34,7 +34,7 @@ static dev_addr_map_t *devs = new dev_addr_map_t[dev_cnt];
 
 SC_MODULE( bus_ahb ) {
   // AHB ports
-  sc_in<bool>     hclk, hreset;
+  sc_in<bool>     hclk, n_hreset;
   sc_inout<bool>  hwrite;
   sc_out<bool>    hsel[ dev_cnt ];
 
@@ -70,7 +70,7 @@ SC_MODULE( bus_ahb ) {
     for( int i = 0; i < AMBA_DEV_CNT; i++ ) sensitive << hrdata_in[i];
 
     SC_METHOD( fsm );
-    sensitive << hclk.pos( ) << hreset.pos( );
+    sensitive << hclk.pos( ) << n_hreset.neg( );
 
     SC_METHOD( dev_select );
     sensitive << haddr;

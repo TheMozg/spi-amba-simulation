@@ -39,13 +39,16 @@ void spi_ahb::read( sc_uint<12> addr ) {
 
 void spi_ahb::write( sc_uint<12> addr ) {
 
+#ifdef SPI_AHB_DEBUG
+  cout << hex << addr << endl;
+#endif
   switch( addr ) {
 
     case SPI_AHB_SS:
 #ifdef SPI_AHB_DEBUG
       printf("SPI_AHB write: SS\n" );
 #endif
-      ss.write( buf_wdata & 0x1 );
+      ss.write( buf_wdata & 0b1 );
       
       break;
     
@@ -53,7 +56,7 @@ void spi_ahb::write( sc_uint<12> addr ) {
 #ifdef SPI_AHB_DEBUG
       printf("SPI_AHB write: START\n" );
 #endif
-      buf_start = buf_wdata & 0x1;
+      buf_start = buf_wdata & 0b1;
       data_in.write( buf_wdata );
       break;
 
@@ -101,12 +104,12 @@ void spi_ahb::fsm( ) {
     case SPI_AHB_WRITE_START: 
       buf_wdata = hwdata.read( );
 
-      write( ( sc_uint<12> ) buf_addr );
-      start.write( buf_start );
       fsm_state = SPI_AHB_WRITE_DONE; 
       break;
 
     case SPI_AHB_WRITE_DONE:
+      write( ( sc_uint<12> ) buf_addr );
+      start.write( buf_start );
       if( buf_start ) {
         buf_start = 0;
       }

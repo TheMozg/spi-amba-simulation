@@ -44,7 +44,7 @@ void bus_ahb::fsm( ) {
   cout << "AHB FSM: " << bus_state << endl;
 #endif
   
-  if( hreset ) {
+  if( !n_hreset ) {
     reset_hsel( );
     bus_state = AHB_IDLE;
     return;

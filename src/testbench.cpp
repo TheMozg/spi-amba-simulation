@@ -12,7 +12,7 @@ using namespace std;
 #include "test_jstk.h"
 #include "test_din_dout.h"
 #include "test_spi_ahb.h"
-//#include "system.h"
+#include "system.h"
 
 #define TRACE_FILE "system"
 
@@ -20,13 +20,13 @@ void bus_tb( );
 void spi_tb( );
 void jstk_tb( );
 void spi_ahb( );
-//void system_tb( );
+void system_tb( );
 void bus_din_dout( );
 
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
-//  system_tb( );
-  spi_ahb( );
+  system_tb( );
+//  spi_ahb( );
 //  bus_din_dout( );
 //  bus_tb( );
 //  spi_tb( );
@@ -34,7 +34,7 @@ int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** ar
 
   return 0;
 }
-/*
+
 void system_tb( ) {
   
   main_sys* sys = new main_sys( "MAIN_SYSTEM" );
@@ -49,12 +49,13 @@ void system_tb( ) {
   sc_trace( wf, sys->haddr, "haddr" );
   sc_trace( wf, sys->hwrite, "hwrite" );
   sc_trace( wf, sys->hwdata, "hwdata" );
-  sc_trace( wf, sys->hreset, "hreset" );
+  sc_trace( wf, sys->hrdata_out, "hrdata_out" );
+  sc_trace( wf, sys->n_hreset, "n_hreset" );
   for( int i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, sys->hsel[i], "hsel_" + to_string(i) );
   }
   for( int i = 0; i < dev_cnt; i++ ) {
-    sc_trace( wf, sys->hrdata[i], "hrdata_" + to_string(i) );
+    sc_trace( wf, sys->hrdata_in[i], "hrdata_in_" + to_string(i) );
   }
 
   // Dump leds and switches registers
@@ -78,7 +79,7 @@ void system_tb( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-*/
+
 void spi_ahb( ) {
 
   // Main clock
@@ -129,10 +130,6 @@ void spi_ahb( ) {
     bus_t.js_busy( js_busy );
     bus_t.rst( rst );
 
-  /*
-  for( int i = 0; i < dev_cnt; i++ ) {
-    bus.hrdata_in[i]( hrdata_in[i] );
-  }*/
   // Open VCD file
   sc_trace_file *wf = sc_create_vcd_trace_file( TRACE_FILE );
 
@@ -179,6 +176,7 @@ void bus_din_dout( ) {
   sc_signal<sc_uint<16>, SC_MANY_WRITERS> switches;
   sc_signal<sc_uint<16>, SC_MANY_WRITERS> leds;
 
+  hreset = 1;
   // Connect interconnect bus
   bus_ahb bus( "BUS_INTER" );
   bus.hclk( clk_m );
@@ -186,7 +184,7 @@ void bus_din_dout( ) {
   bus.hwrite( hwrite );
   bus.hwdata( hwdata );
   bus.hrdata_out( hrdata );
-  bus.hreset( hreset );
+  bus.n_hreset( hreset );
   for( i = 0; i < dev_cnt; i++ ) {
     bus.hsel[i]( hsel[i] );
   }
@@ -247,13 +245,15 @@ void bus_tb( ) {
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_in[ AMBA_DEV_CNT ];
 
+  hreset = 1;
+
   // Connect interconnect bus
   bus_ahb bus( "BUS_INTER" );
   bus.hclk( clk_m );
   bus.haddr( haddr );
   bus.hwrite( hwrite );
   bus.hwdata( hwdata );
-  bus.hreset( hreset );
+  bus.n_hreset( hreset );
   bus.hrdata_out( hrdata_out );
   for( i = 0; i < dev_cnt; i++ ) {
     bus.hsel[i]( hsel[i] );

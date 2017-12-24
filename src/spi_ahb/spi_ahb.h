@@ -75,7 +75,8 @@ SC_MODULE( spi_ahb ) {
     SC_METHOD( fsm );
     sensitive << clk.pos( )
               << n_hreset.neg( )
-              << busy.neg( );
+              << busy.neg( )
+              << haddr;
   }
 
 };

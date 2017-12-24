@@ -3,10 +3,12 @@
 void test_spi_ahb::write( int address, int body ) {
 
   haddr.write( address );
+  wait( );
   hwrite.write( 1 );
   hsel.write( 1 );
   wait( );
   hsel.write( 0 );
+  haddr.write( 0 );
   hwrite.write( 0 );
   hwdata.write( body );
   wait( );
@@ -28,7 +30,12 @@ void test_spi_ahb::demo( ) {
   wait( );
   write( 0x40000004, 0x0 );
   wait( );
+  write( 0x40000004, 0x1 );
+  wait( );
+  write( 0x40000004, 0x0 );
+  wait( );
   read( 0x40000008 );
+  //wait( );
   write( 0x40000000, 0x111 );
   wait( );
   //write( 0x40000000, 0x111 );

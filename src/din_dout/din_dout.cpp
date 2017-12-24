@@ -4,20 +4,20 @@
 void din_dout::bus_slave( ) {
   static bool wr_flag = false;
   static sc_uint<32> wr_addr = 0;
-  
+
+  if ( wr_flag && hclk_i.read( ) ) {
+      execute_write( ( sc_uint<16> )( wr_addr - base_addr ), hwdata_bi.read( ) );
+      wr_flag = false;
+  }
+
   if ( !n_hreset_i.read( ) ) {
     wr_flag = false;
     wr_addr = 0;
     
     leds.write( 0 );
-    return;
   } 
 
-  if ( hclk_i.read( ) && hsel_i.read( ) ) {
-    if ( wr_flag ) {
-      execute_write( ( sc_uint<16> )( wr_addr - base_addr ), hwdata_bi.read( ) );
-      wr_flag = false;
-    }
+  else if ( hclk_i.read( ) && hsel_i.read( ) ) {
     
     if ( hwrite_i.read( ) ) {
       wr_flag = true;

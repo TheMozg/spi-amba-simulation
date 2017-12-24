@@ -5,6 +5,7 @@ uint32_t cpu::write( uint32_t address, uint32_t body ) {
   haddr.write( address );    
   hwrite.write( 1 );    
   wait( );    
+  hwrite.write( 0 );    
   hwdata.write( body );    
   wait( );    
 
@@ -21,9 +22,9 @@ uint32_t cpu::read( uint32_t address ) {
   wait( );    
   wait( );    
 #ifdef SW_OUTPUT
-  printf( "CPU read: 0x%08X at 0x%08X\n", (uint32_t) hrdata[0].read( ), address );
+  printf( "CPU read: 0x%08X at 0x%08X\n", (uint32_t) hrdata.read( ), address );
 #endif
-  return hrdata[0].read( );
+  return hrdata.read( );
 }    
 
 void cpu::sleep( uint32_t cycles ) {
@@ -32,11 +33,15 @@ void cpu::sleep( uint32_t cycles ) {
 
 void cpu::software( ) {
 
+  wait( );
   puts( "-- din_dout testing" );
 
-  write( 0x40000008, 0xDEADBEEF );
   write( 0x40000008, 0x0101BEDA );
+  wait( );
   read( 0x40000004 );
+  wait( );
+  read( 0x40000008 );
+  wait( );
 
   puts( "-- din_dout testing done" );
 
@@ -46,6 +51,7 @@ void cpu::software( ) {
     while( !read( 0x40010004 ) );
     puts( "-- periph contoller testing done" );
     puts( "-- done" );
+    break;
   }
 
   sc_stop( );
