@@ -108,7 +108,6 @@ void spi_s::fsm_idle( ) {
   if( !ss && sclk ) {
     data_out.write( 0 ); 
     busy.write( 1 );
-    shift_reg = data_in.read( );
     tx( );
     fsm_state = SPI_WAIT_SCLK_1;
   }
