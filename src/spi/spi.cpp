@@ -101,6 +101,10 @@ void spi_m::fsm_idle( ) {
 }
 
 void spi_s::fsm_idle( ) {
+  // To set MISO before first master capture
+  shift_reg = data_in.read( );
+  miso.write( shift_reg[0] );
+
   if( !ss && sclk ) {
     data_out.write( 0 ); 
     busy.write( 1 );

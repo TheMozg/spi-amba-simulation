@@ -137,7 +137,8 @@ struct spi_s : public spi {
 
   spi_s( const sc_module_name& name ) : spi( name ) {
     sensitive << sclk.pos( ) 
-              << sclk.neg( );
+              << sclk.neg( )
+              << ss.neg( );
   }
 
 };
