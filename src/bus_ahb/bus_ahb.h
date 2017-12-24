@@ -55,8 +55,7 @@ SC_MODULE( bus_ahb ) {
     AHB_READ_ADR,
     AHB_READ_DATA,
     AHB_WRITE_ADR,
-    AHB_WRITE_DATA,
-    AHB_DONE
+    AHB_WRITE_DATA
   } bus_state;
 
   SC_CTOR( bus_ahb ): hclk( "hclk" ), hwrite( "hwrite" ) {

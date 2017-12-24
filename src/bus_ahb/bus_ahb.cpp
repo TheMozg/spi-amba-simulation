@@ -78,7 +78,6 @@ void bus_ahb::fsm( ) {
 void bus_ahb::dev_select( ) {
   buf_haddr = haddr.read( );
 
-  //if( bus_state == AHB_IDLE ) {
   for( int i = 0; i < dev_cnt; i++ ) { 
     if( buf_haddr >> dev_inner_addr_size == devs[i].prefix ) {
       hsel[i].write( 1 );
@@ -87,7 +86,6 @@ void bus_ahb::dev_select( ) {
       hsel[i].write( 0 );
     }
   }
-  //}
 #ifdef AHB_DEBUG
   cout << "AHB DEVSEL: addr: " << hex << buf_haddr << endl;
   cout << "AHB DEVSEL: base addr: " << hex << ( buf_haddr >> dev_inner_addr_size ) << endl;

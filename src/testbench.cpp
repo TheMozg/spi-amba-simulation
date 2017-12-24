@@ -10,7 +10,7 @@ using namespace std;
 #include "test_bus.h"
 //#include "test_spi.h"
 //#include "test_jstk.h"
-//#include "test_din_dout.h"
+#include "test_din_dout.h"
 //#include "test_spi_ahb.h"
 //#include "system.h"
 
@@ -19,16 +19,17 @@ using namespace std;
 void bus_tb( );/*
 void spi_tb( );
 void jstk_tb( );
-void bus_din_dout( );
 void spi_ahb( );
 void system_tb( );
 */
+void bus_din_dout( );
+
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
 
 //  system_tb( );
 //  spi_ahb( );
-//  bus_din_dout( );
-  bus_tb( );
+  bus_din_dout( );
+//  bus_tb( );
 //  spi_tb( );
 //  jstk_tb( );
 
@@ -142,7 +143,7 @@ void spi_ahb( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-
+*/
 void bus_din_dout( ) {
   int i;
   
@@ -155,7 +156,8 @@ void bus_din_dout( ) {
   sc_signal<bool, SC_MANY_WRITERS> hreset;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> haddr;
   sc_signal<sc_uint<32>, SC_MANY_WRITERS> hwdata;
-  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata[ dev_cnt ];
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata;
+  sc_signal<sc_uint<32>, SC_MANY_WRITERS> hrdata_in[ dev_cnt ];
   sc_signal<sc_uint<16>, SC_MANY_WRITERS> switches;
   sc_signal<sc_uint<16>, SC_MANY_WRITERS> leds;
 
@@ -165,12 +167,13 @@ void bus_din_dout( ) {
   bus.haddr( haddr );
   bus.hwrite( hwrite );
   bus.hwdata( hwdata );
+  bus.hrdata_out( hrdata );
   bus.hreset( hreset );
   for( i = 0; i < dev_cnt; i++ ) {
     bus.hsel[i]( hsel[i] );
   }
   for( i = 0; i < dev_cnt; i++ ) {
-    bus.hrdata[i]( hrdata[i] );
+    bus.hrdata_in[i]( hrdata_in[i] );
   }
 
   test_din_dout bus_t( "DIG_CTR_TEST" );
@@ -180,6 +183,7 @@ void bus_din_dout( ) {
   bus_t.haddr( haddr ); 
   bus_t.hwrite( hwrite );
   bus_t.hwdata( hwdata );
+  bus_t.hrdata( hrdata_in[0] );
   bus_t.leds( leds );
   bus_t.switches( switches );
   
@@ -193,9 +197,10 @@ void bus_din_dout( ) {
   sc_trace( wf, haddr, "haddr" );
   sc_trace( wf, hwrite, "hwrite" );
   sc_trace( wf, hwdata, "hwdata" );
+  sc_trace( wf, hrdata, "hrdata" );
   sc_trace( wf, hreset, "hreset" );
   for( i = 0; i < dev_cnt; i++ ) {
-    sc_trace( wf, hrdata[i], "hrdata_" + to_string(i) );
+    sc_trace( wf, hrdata_in[i], "hrdata_in_" + to_string(i) );
   }
   for( i = 0; i < dev_cnt; i++ ) {
     sc_trace( wf, hsel[i], "hsel_" + to_string(i) );
@@ -208,7 +213,7 @@ void bus_din_dout( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-*/
+
 void bus_tb( ) {
   int i;
   

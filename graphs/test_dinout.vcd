@@ -1,5 +1,5 @@
 $date
-	Wed Dec 20 04:05:25 2017
+	Sun Dec 24 03:05:11 2017
 $end
 $version
 	GTKWave Analyzer v3.3.79 (w)1999-2017 BSI
@@ -8,49 +8,49 @@ $timescale
 	1ps
 $end
 $scope module SystemC $end
-$var wire 16 - leds[15:0] $end
-$var wire 1 & hreset_2 $end
-$var wire 1 % hreset_1 $end
-$var wire 1 $ hreset_0 $end
-$var wire 1 ) hsel_2 $end
-$var wire 1 ( hsel_1 $end
-$var wire 1 ' hsel_0 $end
-$var wire 32 + hrdata[31:0] $end
-$var wire 32 * hwdata[31:0] $end
-$var wire 1 , hwrite $end
+$var wire 16 / switches[15:0] $end
+$var wire 16 . leds[15:0] $end
+$var wire 1 , hsel_2 $end
+$var wire 1 ) hwrite $end
+$var wire 1 + hsel_1 $end
+$var wire 1 * hsel_0 $end
+$var wire 32 & hrdata_in_2[31:0] $end
+$var wire 32 % hrdata_in_1[31:0] $end
 $var wire 32 # haddr[31:0] $end
+$var wire 32 $ hrdata_in_0[31:0] $end
+$var wire 1 ( hreset $end
+$var wire 32 ' hrdata[31:0] $end
 $var wire 1 " clk_m $end
-$var wire 16 . switches[15:0] $end
+$var wire 32 - hwdata[31:0] $end
 $upscope $end
 $enddefinitions $end
 $dumpvars
 #0
-0'
-0,
-0$
 b0 -
-0&
+b0 $
 0)
-b0 +
-b0 *
+b0 /
 b0 .
-0(
+0+
+b0 %
 b0 #
-0%
+b0 &
+0*
+0(
+0,
 0"
+b0 '
 #10000
+1)
 1"
-1'
-1,
+1*
 b1000000000000000000000000001000 #
 #15000
 0"
 #20000
 1"
-b0 #
-0'
-0,
-b11011110101011011011111111101111 *
+b11011110101011011011111111101111 -
+0*
 #25000
 0"
 #30000
@@ -59,23 +59,24 @@ b11011110101011011011111111101111 *
 0"
 #40000
 1"
+1*
+b100000001 /
 b1000000000000000000000000000100 #
-1'
-b100000001 .
+0)
 #45000
 0"
 #50000
 1"
-b100000001 +
-b1011111111101111 -
-0'
-b0 #
+b100000001 $
+0*
+b1011111111101111 .
+b100100001 /
 #55000
 0"
 #60000
 1"
-b1000000000000010000000000000100 #
-b100100001 .
+b1011101010111010 /
+b100000001 '
 #65000
 0"
 #70000
@@ -84,34 +85,11 @@ b100100001 .
 0"
 #80000
 1"
-b1011101010111010 .
-b1000000000000000000000000000100 #
-1'
 #85000
 0"
 #90000
 1"
-0'
-b1011101010111010 +
-b0 #
 #95000
 0"
 #100000
-1"
-b1000000000000000000000000001000 #
-1'
-#105000
-0"
-#110000
-1"
-0'
-b0 #
-b1011111111101111 +
-#115000
-0"
-#120000
-1"
-#125000
-0"
-#130000
 1"
