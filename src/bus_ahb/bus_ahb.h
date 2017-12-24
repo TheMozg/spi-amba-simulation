@@ -67,7 +67,7 @@ SC_MODULE( bus_ahb ) {
     bus_state = AHB_IDLE;
     
     SC_METHOD( hrdata_multiplexer );
-    sensitive << hrdata_in[0] << hrdata_in[1] << hrdata_in[2];
+    for( int i = 0; i < AMBA_DEV_CNT; i++ ) sensitive << hrdata_in[i];
 
     SC_METHOD( fsm );
     sensitive << hclk.pos( ) << hreset.pos( );
