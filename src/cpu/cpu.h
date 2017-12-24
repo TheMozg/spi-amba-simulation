@@ -17,7 +17,13 @@ SC_MODULE( cpu ) {
   uint32_t read( uint32_t address );
 
   // Read data from PmodJSTK
-  uint32_t grab_jstk( );
+  uint32_t grab_jstk_byte( );
+
+  void set_leds( sc_uint<16> data );
+  sc_uint<16> get_switches( );
+  sc_uint<16> get_leds( );
+  void start_jstk_tr( sc_uint<16> data );
+  void end_jstk_tr( );
 
   // Sleep for N cycles
   void sleep( uint32_t cycles );

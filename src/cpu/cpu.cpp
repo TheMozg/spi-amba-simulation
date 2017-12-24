@@ -34,41 +34,61 @@ void cpu::sleep( uint32_t cycles ) {
   for( uint32_t i = 0; i < cycles; i++ ) wait( );
 }
 
-uint32_t cpu::grab_jstk( ) {
+uint32_t cpu::grab_jstk_byte( ) {
   write( SA_ST, 0x1 ); // set start
   while( read( SA_RE ) != 1 );
   return read( SA_DA );
 }
 
-void cpu::software( ) {
+void cpu::set_leds( sc_uint<16> data ) {
+  write( DD_OUT, data );
+}
 
-  wait( );
-  puts( "-- din_dout testing" );
+sc_uint<16> cpu::get_switches( ) {
+  return (sc_uint<16>) read( DD_IN );
+}
 
-  write( DD_OUT, 0x0101BEDA );
-  wait( );
-  read( DD_IN );
-  wait( );
-  read( DD_OUT );
-  wait( );
+sc_uint<16> cpu::get_leds( ) {
+  return (sc_uint<16>) read( DD_OUT );
+}
 
-  puts( "-- din_dout testing done" );
-
-  sleep( 20 );
-
-  puts( "-- periph contoller testing" );
-  write( SA_DA, 0x5 ); // set starting byte
+void cpu::start_jstk_tr( sc_uint<16> data ) {
+  write( SA_DA, data ); // set starting byte
   write( SA_SS, 0x0 ); // set ss
+}  
 
-  for( int i = 0; i < 5; i++ ) grab_jstk( );
-
+void cpu::end_jstk_tr( ) {
   write( SA_SS, 0x1 ); // set ss
-  wait( );
+}
 
-  puts( "-- periph contoller testing done" );
-  puts( "-- done" );
+void cpu::software( ) {
+  
+  while( 1 ) {
+    wait( );
+    puts( "-- din_dout testing" );
 
-  sleep( 10 );
+    set_leds( 0xBABA );
+    wait( );
+    get_switches( );
+    wait( );
+    get_leds( );
+    wait( );
+
+    puts( "-- din_dout testing done" );
+
+    sleep( 20 );
+
+    puts( "-- periph contoller testing" );
+
+    start_jstk_tr( 0x5 );
+    for( int i = 0; i < 5; i++ ) grab_jstk_byte( );
+    end_jstk_tr( );
+
+    puts( "-- periph contoller testing done" );
+    puts( "-- done" );
+
+    sleep( 10 );
+  }
   sc_stop( );
   
 }

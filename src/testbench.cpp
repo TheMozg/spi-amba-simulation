@@ -75,7 +75,7 @@ void system_tb( ) {
   sc_trace( wf, sys->jstk_data_out, "jstk_data_out" );
   sc_trace( wf, sys->jstk_data_in, "jstk_data_in" );
 
-  sc_start( );
+  sc_start( 100000, SC_NS );
   sc_close_vcd_trace_file( wf );
 
 }
