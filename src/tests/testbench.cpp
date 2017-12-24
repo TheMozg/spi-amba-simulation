@@ -11,7 +11,7 @@ using namespace std;
 #include "test_spi.h"
 //#include "test_jstk.h"
 #include "test_din_dout.h"
-//#include "test_spi_ahb.h"
+#include "test_spi_ahb.h"
 //#include "system.h"
 
 #define TRACE_FILE "system"
@@ -79,11 +79,11 @@ void system_tb( ) {
   sc_close_vcd_trace_file( wf );
 
 }
-*//*
+*/
 void spi_ahb( ) {
 
   // Main clock
-  sc_clock clk_m ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
+ /* sc_clock clk_m ( "MAIN", 10, SC_NS, 0.5, 10, SC_NS, true );
 
   sc_signal<bool, SC_MANY_WRITERS> miso;
   sc_signal<bool, SC_MANY_WRITERS> js_busy;
@@ -140,9 +140,9 @@ void spi_ahb( ) {
 
   sc_start( );
 
-  sc_close_vcd_trace_file( wf );
+  sc_close_vcd_trace_file( wf );*/
 
-}*/
+}
 
 void bus_din_dout( ) {
   int i;

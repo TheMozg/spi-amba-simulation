@@ -84,7 +84,5 @@ private:
   void dev_select( ); // Select slave device (decoder)
   void reset_hsel( ); // Reset device select lines
   void amba_idle( );  // Start read/write transaction from idle state
-  void amba_write_address( ); // Address phase of write transaction
-  void amba_read_address( );  // Address phase of read transaction
   void hrdata_multiplexer( );
 };
