@@ -67,7 +67,7 @@ SC_MODULE( bus_ahb ) {
     bus_state = AHB_IDLE;
 
     SC_METHOD( fsm );
-    sensitive << hclk.pos( );
+    sensitive << hclk.pos( ) << hreset.pos( );
 
     SC_METHOD( dev_select );
     sensitive << haddr;

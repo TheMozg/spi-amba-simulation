@@ -43,6 +43,12 @@ void bus_ahb::fsm( ) {
 #ifdef AHB_DEBUG
   cout << "AHB FSM: " << bus_state << endl;
 #endif
+  
+  if( hreset ) {
+    reset_hsel( );
+    bus_state = AHB_IDLE;
+    return;
+  }
 
   if( bus_state == AHB_IDLE ) {
     amba_idle( );
