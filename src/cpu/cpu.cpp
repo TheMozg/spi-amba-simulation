@@ -1,5 +1,6 @@
 #include "cpu.h"
 
+// Non-pipeline io
 uint32_t cpu::write( uint32_t address, uint32_t body ) {    
     
   haddr.write( address );    
@@ -20,6 +21,7 @@ uint32_t cpu::read( uint32_t address ) {
   haddr.write( address );    
   hwrite.write( 0 );    
   wait( );    
+  haddr.write( 0 );
   wait( );    
 #ifdef SW_OUTPUT
   printf( "CPU read: 0x%08X at 0x%08X\n", (uint32_t) hrdata.read( ), address );
@@ -42,18 +44,44 @@ void cpu::software( ) {
   wait( );
   read( 0x40000008 );
   wait( );
-
   puts( "-- din_dout testing done" );
 
-  while( 1 ) {
+  sleep( 20 );
+
+ // while( 1 ) {
     puts( "-- periph contoller testing" );
-    write( 0x40010000, 0x00000101 );
-    while( !read( 0x40010004 ) );
+    write( 0x40001012, 0x5 ); // set starting byte
+    write( 0x40001004, 0x0 ); // set ss
+
+    write( 0x40001000, 0x1 ); // set start
+    while( read( 0x40001008 ) != 1 );
+    read( 0x40001012 );
+
+
+    write( 0x40001000, 0x1 ); // set start
+    while( read( 0x40001008 ) != 1 );
+    read( 0x40001012 );
+
+    write( 0x40001000, 0x1 ); // set start
+    while( read( 0x40001008 ) != 1 );
+    read( 0x40001012 );
+
+    write( 0x40001000, 0x1 ); // set start
+    while( read( 0x40001008 ) != 1 );
+    read( 0x40001012 );
+
+    write( 0x40001000, 0x1 ); // set start
+    while( read( 0x40001008 ) != 1 );
+    read( 0x40001012 );
+
+    write( 0x40001004, 0x1 ); // set ss
+    wait( );
     puts( "-- periph contoller testing done" );
     puts( "-- done" );
-    break;
-  }
+ //   break;
+//  }
 
+  sleep( 10 );
   sc_stop( );
   
 }

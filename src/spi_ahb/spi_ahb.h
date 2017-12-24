@@ -43,7 +43,6 @@ SC_MODULE( spi_ahb ) {
   sc_uint<32> buf_rdata;
   sc_uint<32> buf_wdata;
   sc_uint<32> buf_addr;
-  sc_uint<1>  buf_start;
 
   enum {
     SPI_AHB_IDLE,

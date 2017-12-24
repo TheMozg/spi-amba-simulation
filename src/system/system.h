@@ -55,8 +55,8 @@ SC_MODULE( main_sys ) {
   // Wires for periph controller
   sc_signal<bool> start { "start" },  spi_ahb_busy  { "spi_ahb_busy" };
   sc_signal<bool> miso  { "miso" },   mosi  { "mosi" };
-  sc_signal<bool> sclk  { "sclk" },   ss    { "ss" };
-  //sc_in<bool> rst;
+  sc_signal<bool> sclk  { "sclk" },   ss    { "ss" }, rst { "rst" };
+
   sc_signal<sc_uint<SPI_BIT_CAP> > spi_ahb_data_out { "spi_ahb_data_out" };
   sc_signal<sc_uint<SPI_BIT_CAP> > spi_ahb_data_in  { "spi_ahb_data_in" };
 
@@ -73,6 +73,7 @@ SC_MODULE( main_sys ) {
     // Master clock setup
     mclk = new sc_clock( "mclk", 10, SC_NS, 0.5, 10, SC_NS, true );
     n_hreset = 1;
+    ss = 1;
 
     // AMBA AHB bus setup
     mbus = new bus_ahb( "BUS_AHB" );
@@ -110,16 +111,17 @@ SC_MODULE( main_sys ) {
       mdin_dout->leds( leds );
 
     // Peripheral controller setup
-    /*mspi_ahb = new spi_ahb( "SPI_AHB" );
+    mspi_ahb = new spi_ahb( "SPI_AHB" );
       mspi_ahb->clk( *mclk );
       mspi_ahb->hwrite( hwrite );
       mspi_ahb->hwdata( hwdata );
-      mspi_ahb->hrdata( hrdata[1] );
+      mspi_ahb->hrdata( hrdata_in[1] );
       mspi_ahb->haddr( haddr );
       mspi_ahb->n_hreset( n_hreset );
       mspi_ahb->hsel( hsel[1] );
       mspi_ahb->start( start );
       mspi_ahb->ss( ss );
+      mspi_ahb->rst( rst );
       mspi_ahb->busy( spi_ahb_busy );
       mspi_ahb->sclk( sclk );
       mspi_ahb->miso( miso );
@@ -133,12 +135,12 @@ SC_MODULE( main_sys ) {
       mjstk->sclk( sclk );
       mjstk->mosi( mosi );
       mjstk->miso( miso );
-      mjstk->rst( hreset );
+      mjstk->rst( rst );
       mjstk->ss( ss );
       mjstk->busy( jstk_busy );
       mjstk->data_out( jstk_data_out );
       mjstk->data_in( jstk_data_in );
-    */
+    
     SC_THREAD( stimuli );
     sensitive << *mclk << mrst;
     

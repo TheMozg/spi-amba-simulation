@@ -56,8 +56,15 @@ void spi_ahb::write( sc_uint<12> addr ) {
 #ifdef SPI_AHB_DEBUG
       printf("SPI_AHB write: START\n" );
 #endif
-      buf_start = buf_wdata & 0b1;
+      start.write( buf_wdata & 0b1 );
+      break;
+    
+    case SPI_AHB_DATA:
+#ifdef SPI_AHB_DEBUG
+      printf("SPI_AHB write: DATA\n" );
+#endif
       data_in.write( buf_wdata );
+
       break;
 
     default:
@@ -78,6 +85,7 @@ void spi_ahb::fsm( ) {
     buf_rdata = 0;
     return;
   }
+
   if( ready ) buf_data = data_out.read( );
 
   if( start.read( ) ) start.write( 0 );
@@ -103,18 +111,11 @@ void spi_ahb::fsm( ) {
 
     case SPI_AHB_WRITE_START: 
       buf_wdata = hwdata.read( );
-
       fsm_state = SPI_AHB_WRITE_DONE; 
       break;
 
     case SPI_AHB_WRITE_DONE:
       write( ( sc_uint<12> ) buf_addr );
-      start.write( buf_start );
-      if( buf_start ) {
-        buf_start = 0;
-      }
-      start.write( buf_start );
-
       fsm_state = SPI_AHB_IDLE; 
       break;
 
