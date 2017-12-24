@@ -27,10 +27,10 @@ int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** ar
 
 //  system_tb( );
 //  spi_ahb( );
-  bus_din_dout( );
+//  bus_din_dout( );
 //  bus_tb( );
 //  spi_tb( );
-//  jstk_tb( );
+  jstk_tb( );
 
   return 0;
 }

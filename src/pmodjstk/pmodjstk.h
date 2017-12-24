@@ -17,7 +17,7 @@ SC_MODULE( pmodjstk ) {
 
   spi_s* spi;
 
-  sc_in<bool> clk, sclk, mosi, rst, ss;
+  sc_in<bool> clk, sclk, mosi, rst, ss, start;
   sc_out<bool> miso, busy;
 
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in;
@@ -60,6 +60,7 @@ SC_MODULE( pmodjstk ) {
     spi->rst( rst );
     spi->ss( ss );
     spi->busy( busy );
+    spi->start( start );
     
     spi->mosi( mosi );
     spi->miso( miso );
@@ -69,16 +70,19 @@ SC_MODULE( pmodjstk ) {
     
     fsm_state = JSTK_EMUL_WAIT_FIRST_BYTE;
 
-    x_1 = 0b11001111;
-    x_2 = 0x00000010;
+    x_1 = 0xBABA;
+    x_2 = 0x0001;
 
-    y_1 = 0x01010101;
-    y_2 = 0x10101010;
+    y_1 = 0xD1C5;
+    y_2 = 0x0002;
 
     buttons = 0b00000111;
     
     SC_METHOD( emul );
-    sensitive << clk.pos( ) << ss.neg( ) << rst.pos( );
+    sensitive << clk.pos( ) 
+              << ss.neg( ) 
+              << ss.pos( ) 
+              << rst.pos( );
   }
 
   ~pmodjstk( ) {

@@ -40,6 +40,7 @@ SC_MODULE( test_jstk ) {
     jstk->ss( ss );
     jstk->sclk( sclk );
     jstk->busy( busy_s );
+    jstk->start( start );
 
     jstk->data_out( data_out_s );
     jstk->data_in( data_in_s );
