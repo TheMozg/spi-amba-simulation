@@ -6,10 +6,10 @@ using namespace std;
 #include "systemc.h"
 #include "spi.h"
 #include "bus_ahb.h"
-//#include "spi_ahb.h"
+#include "spi_ahb.h"
 #include "test_bus.h"
 #include "test_spi.h"
-//#include "test_jstk.h"
+#include "test_jstk.h"
 #include "test_din_dout.h"
 #include "test_spi_ahb.h"
 //#include "system.h"
@@ -18,10 +18,9 @@ using namespace std;
 
 void bus_tb( );
 void spi_tb( );
-//void jstk_tb( );
+void jstk_tb( );
 void spi_ahb( );
 //void system_tb( );
-
 void bus_din_dout( );
 
 int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** argv ) {
@@ -29,9 +28,9 @@ int sc_main( int __attribute__((unused)) argc, char __attribute__((unused))** ar
 //  system_tb( );
 //  spi_ahb( );
 //  bus_din_dout( );
-  bus_tb( );
+//  bus_tb( );
 //  spi_tb( );
-//  jstk_tb( );
+  jstk_tb( );
 
   return 0;
 }
@@ -341,7 +340,7 @@ void spi_tb( ) {
 
   sc_start( );
 }
-/*
+
 void jstk_tb( ) {
   
   // Main clock
@@ -364,7 +363,7 @@ void jstk_tb( ) {
   sc_signal<sc_uint<SPI_BIT_CAP> > data_out_s;
 
   // Connect the DUT
-  test_jstk jstk_t( "SPI_TEST" );
+  test_jstk jstk_t( "JSTK_TEST" );
     jstk_t.clock( clock );
     jstk_t.miso( miso );
     jstk_t.mosi( mosi );
@@ -404,4 +403,4 @@ void jstk_tb( ) {
 
   sc_start( );
 }
-*/
+
