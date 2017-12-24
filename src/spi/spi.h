@@ -29,7 +29,7 @@ struct spi : public sc_module {
   SC_HAS_PROCESS( spi );
 
   // SPI wires
-  sc_in<bool> clk, rst, start;
+  sc_in<bool> clk, rst;
   sc_out<bool> busy;
 
   // Shift register
@@ -82,7 +82,7 @@ struct spi_m : public spi {
 
   SC_HAS_PROCESS( spi_m );
 
-  sc_in<bool> miso;
+  sc_in<bool> miso, start;
   sc_out<bool> mosi, sclk, ss;
 
   // SPI clock divider to generate sclk
@@ -103,7 +103,7 @@ struct spi_m : public spi {
     ss.initialize( 1 );
 
     // Clock generator for sclk
-    clk_gen->n_enable( ss );
+    clk_gen->enable( busy );
     clk_gen->clock( clk );
     clk_gen->qclk( sclk );
 

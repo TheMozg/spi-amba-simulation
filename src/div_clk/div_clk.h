@@ -7,7 +7,7 @@ SC_MODULE( div_clk ) {
 
   sc_in_clk     clock;
   sc_out<bool>  qclk; // Quarter of the clock
-  sc_in<bool>   n_enable;
+  sc_in<bool>   enable;
   sc_uint<2>    divider;
 
   void tick( );

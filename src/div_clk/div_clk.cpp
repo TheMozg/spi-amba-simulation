@@ -1,7 +1,7 @@
 #include "div_clk.h"
 
 void div_clk::tick( ) {
-  if( !n_enable ) {
+  if( enable ) {
     divider++;
     if( divider == 2 ) {
       qclk.write( !qclk.read( ) );

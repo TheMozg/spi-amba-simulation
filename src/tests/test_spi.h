@@ -40,7 +40,6 @@ SC_MODULE( test_spi ) {
     s_spi->ss( ss );
     s_spi->sclk( sclk );
     s_spi->busy( busy_s );
-    s_spi->start( start );
 
     s_spi->data_out( data_out_s );
     s_spi->data_in( data_in_s );

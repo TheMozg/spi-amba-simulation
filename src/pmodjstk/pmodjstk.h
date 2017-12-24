@@ -17,7 +17,7 @@ SC_MODULE( pmodjstk ) {
 
   spi_s* spi;
 
-  sc_in<bool> clk, sclk, mosi, rst, ss, start;
+  sc_in<bool> clk, sclk, mosi, rst, ss;
   sc_out<bool> miso, busy;
 
   sc_inout<sc_uint<SPI_BIT_CAP> > data_in;
@@ -60,7 +60,6 @@ SC_MODULE( pmodjstk ) {
     spi->rst( rst );
     spi->ss( ss );
     spi->busy( busy );
-    spi->start( start );
     
     spi->mosi( mosi );
     spi->miso( miso );
