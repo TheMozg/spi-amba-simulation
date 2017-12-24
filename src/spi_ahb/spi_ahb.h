@@ -40,12 +40,15 @@ SC_MODULE( spi_ahb ) {
   sc_uint<1> ready; // Indicates that SPI transaction is finished
 
   sc_uint<32> buf_data;
+  sc_uint<32> buf_rdata;
+  sc_uint<32> buf_wdata;
   sc_uint<32> buf_addr;
-  sc_uint<1> buf_start;
+  sc_uint<1>  buf_start;
 
   enum {
     SPI_AHB_IDLE,
-    SPI_AHB_READ,
+    SPI_AHB_READ_START,
+    SPI_AHB_READ_DONE,
     SPI_AHB_WRITE_START,
     SPI_AHB_WRITE_DONE
   } fsm_state;
