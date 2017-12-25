@@ -28,6 +28,11 @@ module mfp_system
     input         UART_RX,
     output        UART_TX,
 
+    input         SPI_MISO,
+    output        SPI_MOSI,
+    output        SPI_SCLK,
+    output        SPI_SS,
+
     output        SPI_CS,
     output        SPI_SCK,
     input         SPI_SDO
@@ -401,6 +406,11 @@ module mfp_system
                                                
         .UART_RX          (   UART_RX          ), 
         .UART_TX          (   UART_TX          ),
+        
+        .SPI_MISO         ( SPI_MISO           ),
+        .SPI_MOSI         ( SPI_MOSI           ),
+        .SPI_SCLK         ( SPI_SCLK           ),
+        .SPI_SS           ( SPI_SS             ),
                                                
         .MFP_Reset        (   MFP_Reset        )
     );

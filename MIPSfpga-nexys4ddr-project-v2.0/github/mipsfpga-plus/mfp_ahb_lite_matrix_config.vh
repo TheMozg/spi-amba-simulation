@@ -79,3 +79,4 @@
 
 `define UART_TX_ADDR_MATCH          7'h7d
 
+`define SPI_ADDR_MATCH              7'h7c
