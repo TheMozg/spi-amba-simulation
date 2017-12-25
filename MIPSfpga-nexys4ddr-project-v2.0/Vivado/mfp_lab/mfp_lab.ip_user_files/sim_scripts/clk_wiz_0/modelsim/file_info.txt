@@ -1,0 +1,4 @@
+Language File-Name            IP         Library         File-Path                                
+Verilog, clk_wiz_0_clk_wiz.v, clk_wiz_0, xil_defaultlib, ../../../ip/clk_wiz_0/clk_wiz_0_clk_wiz.v
+Verilog, clk_wiz_0.v,         clk_wiz_0, xil_defaultlib, ../../../ip/clk_wiz_0/clk_wiz_0.v        
+Verilog, glbl.v,              *,         xil_defaultlib, glbl.v                                   

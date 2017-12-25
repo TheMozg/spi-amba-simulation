@@ -1,0 +1,10 @@
+3c08bf80  //bfc00000         lui $8, 0xbf80     #LEDR addr
+250c0004  //bfc00004         addiu $12, $8, 4   #LEDG addr
+250d0008  //bfc00008         addiu $13, $8, 8   #SW addr
+250e000c  //bfc0000c         addiu $14, $8, 0xc #PB addr 
+8daa0000  //bfc00010 readIO: lw $10, 0($13)     #read SW
+8dcb0000  //bfc00014         lw $11, 0($14)     #read PB
+ad0a0000  //bfc00018         sw $10, 0($8)      #SW -> LEDR
+ad8b0000  //bfc0001c         sw $11, 0($12)     #PB -> LEDG
+1000fffb  //bfc00020         beq $0, $0, readIO #repeat
+00000000  //bfc00024         nop                #branch delay
