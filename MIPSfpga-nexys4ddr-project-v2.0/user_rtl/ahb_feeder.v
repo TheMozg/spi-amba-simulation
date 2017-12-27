@@ -51,42 +51,47 @@ module ahb_feeder
         
         // Test PMODJSTK controller
 
-        ahb_master.ahb_write(SPI_SS_ADDR, 1'b1);
-        ahb_master.ahb_write(SPI_DATA_ADDR, 32'hAA);
-        ahb_master.ahb_write(SPI_START_ADDR, 1'b1);
-
-        // Write 1st byte to transmit
-        // data_buf = 8'h00;
-        // spi_ready_flag = 1'b0;
-        // while (spi_ready_flag == 1'b0) begin
-        //     ahb_master.ahb_read(SPI_READY_ADDR, spi_ready_flag);
-        // end
+        ahb_master.ahb_write(SPI_SS_ADDR, 1'b0);
         
-        // // Test UART transmitter
-        // 
-        // // Write value small divider for simulation
-        // ahb_master.ahb_write(UART_DVDR_ADDR, 32'h2);
-        // 
-        // // Write 1st byte to transmit
-        // data_buf[0] = 1'b1;
-        // while (data_buf[0] == 1'b1) begin // wait for end of current transmission
-        //     ahb_master.ahb_read(UART_CTRL_ADDR, data_buf);
-        // end
-        // ahb_master.ahb_write(UART_DATA_ADDR, 32'hAA); // write 0xAA to transmit register
-        // 
-        // // Write 2nd byte to transmit
-        // data_buf[0] = 1'b1;
-        // while (data_buf[0] == 1'b1) begin // wait for end of current transmission
-        //     ahb_master.ahb_read(UART_CTRL_ADDR, data_buf);
-        // end
-        // ahb_master.ahb_write(UART_DATA_ADDR, 32'hCC); // write 0xСС to transmit register
-        // 
-        // // Write 3rd byte to transmit
-        // data_buf[0] = 1'b1;
-        // while (data_buf[0] == 1'b1) begin // wait for end of current transmission
-        //     ahb_master.ahb_read(UART_CTRL_ADDR, data_buf);
-        // end
-        // ahb_master.ahb_write(UART_DATA_ADDR, 32'h99); // write 0x99 to transmit register        
+        ahb_master.ahb_write(SPI_DATA_ADDR, 32'b10101010);
+        ahb_master.ahb_write(SPI_START_ADDR, 1'b1);
+        spi_ready_flag = 1'b0;
+        while (spi_ready_flag == 1'b0) begin
+            ahb_master.ahb_read(SPI_READY_ADDR, spi_ready_flag);
+        end
+        ahb_master.ahb_read(SPI_DATA_ADDR, data_buf);
+
+        ahb_master.ahb_write(SPI_DATA_ADDR, 32'b00110011);
+        ahb_master.ahb_write(SPI_START_ADDR, 1'b1);
+        spi_ready_flag = 1'b0;
+        while (spi_ready_flag == 1'b0) begin
+            ahb_master.ahb_read(SPI_READY_ADDR, spi_ready_flag);
+        end
+        ahb_master.ahb_read(SPI_DATA_ADDR, data_buf);
+
+        ahb_master.ahb_write(SPI_DATA_ADDR, 32'b11111111);
+        ahb_master.ahb_write(SPI_START_ADDR, 1'b1);
+        spi_ready_flag = 1'b0;
+        while (spi_ready_flag == 1'b0) begin
+            ahb_master.ahb_read(SPI_READY_ADDR, spi_ready_flag);
+        end
+        ahb_master.ahb_read(SPI_DATA_ADDR, data_buf);
+        
+        ahb_master.ahb_write(SPI_START_ADDR, 1'b1);
+        spi_ready_flag = 1'b0;
+        while (spi_ready_flag == 1'b0) begin
+            ahb_master.ahb_read(SPI_READY_ADDR, spi_ready_flag);
+        end
+        ahb_master.ahb_read(SPI_DATA_ADDR, data_buf);
+        
+        ahb_master.ahb_write(SPI_START_ADDR, 1'b1);
+        spi_ready_flag = 1'b0;
+        while (spi_ready_flag == 1'b0) begin
+            ahb_master.ahb_read(SPI_READY_ADDR, spi_ready_flag);
+        end
+        ahb_master.ahb_read(SPI_DATA_ADDR, data_buf);
+        
+        ahb_master.ahb_write(SPI_SS_ADDR, 1'b1);
         
     end
 

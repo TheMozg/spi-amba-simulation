@@ -11,9 +11,9 @@ module ahb_spi
     output reg [ 31: 0] HRDATA,
 
     input               SPI_MISO,
-    output wire          SPI_MOSI,
-    output wire          SPI_SCLK,
-    output wire          SPI_SS
+    output              SPI_MOSI,
+    output              SPI_SCLK,
+    output              SPI_SS
 );
 
     localparam START_REG_ADDR = 8'h0;
@@ -21,15 +21,17 @@ module ahb_spi
     localparam READY_REG_ADDR = 8'h8;
     localparam DATA_REG_ADDR  = 8'h12;
     
-    reg   [ 7:0] data_buf_w;
-    wire  [ 7:0] data_buf_r;
-    reg         start_flag;
-    wire         ready_flag;
+    reg  [ 7:0] data_buf_w;
+    wire [ 7:0] data_buf_r;
     reg         ss_flag;
-
+    reg         start_flag;
+    wire        ready_flag;
+    
+    assign SPI_SS = ss_flag;
+    
     spi_master_driver spi(
         .clk_i(HCLK),
-        .rst_i(HRESETn),
+        .rst_i(~HRESETn),
         
         .start_i(start_flag),
         .data_in_bi(data_buf_w),
@@ -39,7 +41,7 @@ module ahb_spi
         .spi_miso_i(SPI_MISO),
         .spi_mosi_o(SPI_MOSI),
         .spi_sclk_o(SPI_SCLK),
-        .spi_cs_o(SPI_SS)
+        .spi_cs_i(ss_flag)
     );
     
     // AHB bus adapter
@@ -57,19 +59,25 @@ module ahb_spi
 
     always @(posedge HCLK or negedge HRESETn) begin
         if (~HRESETn) begin
-            data_buf_w <= 8'b00;
+            data_buf_w <= 8'b0;
             start_flag <= 1'b0;
-            ss_flag    <= 1'b0;
+            ss_flag    <= 1'b1;
         end
         else begin
-            // Bus interface logic, write operation
-            if (HSEL_dly & HWRITE_dly) begin
-                case (reg_addr)
-                DATA_REG_ADDR:  data_buf_w <= HWDATA[7:0];
-                START_REG_ADDR: start_flag <= HWDATA[0];
-                SS_REG_ADDR:    ss_flag    <= HWDATA[0];
-                default:; /* READY_REG_ADDR: do nothing */
-                endcase
+            if (HSEL_dly) begin
+                // Bus interface logic, write operation
+                if (HWRITE_dly) begin
+                    case (reg_addr)
+                    DATA_REG_ADDR:  data_buf_w <= HWDATA[7:0];
+                    START_REG_ADDR: start_flag <= HWDATA[0];
+                    SS_REG_ADDR:    ss_flag    <= HWDATA[0];
+                    default:; /* READY_REG_ADDR: do nothing */
+                    endcase
+                end
+                // Reset start flag automatically after one tick
+                if (!(HWRITE_dly && reg_addr == START_REG_ADDR)) begin
+                    start_flag <= 1'b0;
+                end
             end
         end
     end
@@ -77,9 +85,7 @@ module ahb_spi
     // Bus interface logic, data for read operation
     always @(*) begin
         case (reg_addr)
-            START_REG_ADDR: HRDATA = start_flag;
-            SS_REG_ADDR:    HRDATA = ss_flag;
-            READY_REG_ADDR: HRDATA = ready_flag;
+            READY_REG_ADDR: HRDATA = ~ready_flag;
             DATA_REG_ADDR:  HRDATA = data_buf_r;
             default:        HRDATA = 32'b0;
         endcase

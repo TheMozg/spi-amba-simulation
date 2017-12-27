@@ -14,12 +14,13 @@ module spi_master_driver(
     output reg  [7:0] data_out_bo, // data recevied from slave in last transaction
     
     // SPI interface
+    input             spi_cs_i,
     input             spi_miso_i,
     output reg        spi_mosi_o,
-    output reg        spi_sclk_o,
-    output reg        spi_cs_o
+    output reg        spi_sclk_o
     );
 
+    reg   in_progress;
     reg   [2:0] counter;
     reg   clk_div4;
     reg   [7:0] shiftreg;
@@ -41,16 +42,21 @@ module spi_master_driver(
             shiftreg    <= 0;
             bit_buffer  <= 0;
             data_out_bo <= 0;    
-            spi_mosi_o  <= 0;    
+            spi_mosi_o  <= 0;
+            in_progress <= 0;
+            clk_div4    <= 0;
             state       <= STATE_IDLE; 
         end 
         else begin
             case (state)
                 STATE_IDLE: begin
                     if (start_i) begin
+                        in_progress = 1;
                         shiftreg <= data_in_bi;
                         state <= STATE_NOP_1;
                         clk_div4 <= 0;
+                    end else begin 
+                        in_progress = 0;
                     end
                 end
                 STATE_WAIT_SCLK_1: begin
@@ -63,6 +69,7 @@ module spi_master_driver(
                     shiftreg <= { bit_buffer, shiftreg[7:1] };
                     state <= STATE_NOP_1;
                     if (counter == 7) begin
+                        in_progress = 0;
                         state <= STATE_NOP_IDLE;
                         counter <= 0;
                     end else begin
@@ -87,10 +94,12 @@ module spi_master_driver(
         
     always @* begin
         busy_o      = (state != STATE_IDLE);
-        spi_cs_o    = (state == STATE_IDLE);
         data_out_bo = shiftreg;
-        spi_sclk_o  = clk_div4 && !spi_cs_o;
-        spi_mosi_o  = shiftreg[0] && !spi_cs_o;
+        spi_sclk_o  = clk_div4 && !spi_cs_i;
+        if (in_progress)
+            spi_mosi_o  = shiftreg[0] && !spi_cs_i;
+        else
+            spi_mosi_o  = 0;
     end
 
 endmodule
