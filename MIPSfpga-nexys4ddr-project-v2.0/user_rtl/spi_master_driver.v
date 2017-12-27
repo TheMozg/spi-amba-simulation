@@ -20,18 +20,19 @@ module spi_master_driver(
     output reg        spi_sclk_o
     );
 
+    localparam CLK_NOPS = 1;
+
     reg   in_progress;
     reg   [2:0] counter;
-    reg   clk_div4;
+    reg   [7:0] clk_div;
+    reg   clk_div_pulse;
     reg   [7:0] shiftreg;
     reg         bit_buffer;
     
     localparam STATE_IDLE              = 0; // wait for transaction begin
     localparam STATE_WAIT_SCLK_1       = 1; // wait for SCLK to become 1
     localparam STATE_WAIT_SCLK_0       = 2; // wait for SCLK to become 0
-    localparam STATE_NOP_0             = 3; // skip half sclk
-    localparam STATE_NOP_1             = 4; // skip half sclk
-    localparam STATE_NOP_IDLE          = 5; // skip half sclk
+    localparam STATE_WAIT_IDLE         = 3; // wait one SCLK and swith to idle
     
     reg   [2:0] state;
     
@@ -44,7 +45,8 @@ module spi_master_driver(
             data_out_bo <= 0;    
             spi_mosi_o  <= 0;
             in_progress <= 0;
-            clk_div4    <= 0;
+            clk_div     <= 0;
+            clk_div_pulse <= 0;
             state       <= STATE_IDLE; 
         end 
         else begin
@@ -53,37 +55,47 @@ module spi_master_driver(
                     if (start_i) begin
                         in_progress = 1;
                         shiftreg <= data_in_bi;
-                        state <= STATE_NOP_1;
-                        clk_div4 <= 0;
+                        state <= STATE_WAIT_SCLK_1;
+                        clk_div <= 0;
                     end else begin 
                         in_progress = 0;
                     end
                 end
                 STATE_WAIT_SCLK_1: begin
-                    clk_div4 <= 1;
-                    bit_buffer <= spi_miso_i;
-                    state <= STATE_NOP_0;
-                end
-                STATE_WAIT_SCLK_0: begin
-                    clk_div4 <= 0;
-                    shiftreg <= { bit_buffer, shiftreg[7:1] };
-                    state <= STATE_NOP_1;
-                    if (counter == 7) begin
-                        in_progress = 0;
-                        state <= STATE_NOP_IDLE;
-                        counter <= 0;
+                    if (clk_div == CLK_NOPS) begin
+                        bit_buffer <= spi_miso_i;
+                        state <= STATE_WAIT_SCLK_0;
+                        clk_div <= 0;
+                        clk_div_pulse <= ~clk_div_pulse;
                     end else begin
-                        counter <= counter + 1;
+                        clk_div <= clk_div + 1;
                     end
                 end
-                STATE_NOP_1: begin
-                    state <= STATE_WAIT_SCLK_1;
+                STATE_WAIT_SCLK_0: begin
+                    if (clk_div == CLK_NOPS) begin
+                        shiftreg <= { bit_buffer, shiftreg[7:1] };
+                        if (counter == 7) begin
+                            in_progress <= 0;
+                            state <= STATE_WAIT_IDLE;
+                            counter <= 0;
+                        end else begin
+                            state <= STATE_WAIT_SCLK_1;
+                            counter <= counter + 1;
+                        end
+                        clk_div <= 0;
+                        clk_div_pulse <= ~clk_div_pulse;
+                    end else begin
+                        clk_div <= clk_div + 1;
+                    end
                 end
-                STATE_NOP_0: begin
-                    state <= STATE_WAIT_SCLK_0;
-                end
-                STATE_NOP_IDLE: begin
-                    state <= STATE_IDLE;
+                STATE_WAIT_IDLE: begin
+                    if (clk_div == CLK_NOPS) begin
+                        state <= STATE_IDLE;
+                        clk_div <= 0;
+                        clk_div_pulse <= 0;
+                    end else begin
+                        clk_div <= clk_div + 1;
+                    end
                 end
                 default: begin
                     state <= STATE_IDLE;
@@ -95,7 +107,7 @@ module spi_master_driver(
     always @* begin
         busy_o      = (state != STATE_IDLE);
         data_out_bo = shiftreg;
-        spi_sclk_o  = clk_div4 && !spi_cs_i;
+        spi_sclk_o  = clk_div_pulse && !spi_cs_i;
         if (in_progress)
             spi_mosi_o  = shiftreg[0] && !spi_cs_i;
         else
