@@ -141,6 +141,22 @@ module mfp_ahb_lite_matrix
         .UART_TX ( UART_TX  )
     );
 
+    ahb_spi spi
+    (
+        .HCLK    ( HCLK     ),
+        .HRESETn ( HRESETn  ),
+        .HADDR   ( HADDR    ),
+        .HSEL    ( HSEL [4] ),
+        .HWDATA  ( HWDATA   ),
+        .HWRITE  ( HWRITE   ),
+        .HRDATA  ( HRDATA_4 ),
+
+        .SPI_MOSI ( SPI_MOSI ),
+        .SPI_MISO ( SPI_MISO ),
+        .SPI_SS   ( SPI_SS   ),
+        .SPI_SCLK ( SPI_SCLK )
+    );
+
     assign HREADY = HREADY_0 & HREADY_1 & HREADY_2 & HREADY_3 & HREADY_4;
 
     mfp_ahb_lite_response_mux response_mux

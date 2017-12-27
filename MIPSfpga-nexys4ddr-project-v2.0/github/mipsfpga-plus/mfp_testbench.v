@@ -32,6 +32,11 @@ module mfp_testbench;
 
     reg         UART_RX;
     wire        UART_TX;
+    
+    wire        SPI_MISO;
+    wire        SPI_MOSI;
+    wire        SPI_SCLK;
+    wire        SPI_SS;
 
     wire        SPI_CS;
     wire        SPI_SCK;
@@ -64,7 +69,12 @@ module mfp_testbench;
         .IO_7_SegmentHEX  ( IO_7_SegmentHEX  ),
                                                
         .UART_RX          ( UART_RX          ),
-        .UART_TX          ( UART_TX          ), 
+        .UART_TX          ( UART_TX          ),
+        
+        .SPI_MISO         ( SPI_MISO         ),
+        .SPI_MOSI         ( SPI_MOSI         ),
+        .SPI_SCLK         ( SPI_SCLK         ),
+        .SPI_SS           ( SPI_SS           ), 
 
         .SPI_CS           ( SPI_CS           ),
         .SPI_SCK          ( SPI_SCK          ),
