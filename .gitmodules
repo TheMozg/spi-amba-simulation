@@ -1,3 +1,0 @@
-[submodule "systemc"]
-	path = thirdparty/systemc
-	url = git@github.com:TheMozg/SystemC.git
