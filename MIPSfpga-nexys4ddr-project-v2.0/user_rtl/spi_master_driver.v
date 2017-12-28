@@ -38,12 +38,9 @@ module spi_master_driver(
     
     always @(posedge clk_i) begin
         if (rst_i) begin
-            spi_sclk_o  <= 0;
             counter     <= 0;
             shiftreg    <= 0;
             bit_buffer  <= 0;
-            data_out_bo <= 0;    
-            spi_mosi_o  <= 0;
             in_progress <= 0;
             clk_div     <= 0;
             clk_div_pulse <= 0;

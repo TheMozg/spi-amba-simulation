@@ -13,7 +13,7 @@ module ahb_spi
     input               SPI_MISO,
     output              SPI_MOSI,
     output              SPI_SCLK,
-    output              SPI_SS
+    output reg          SPI_SS
 );
 
     localparam START_REG_ADDR = 8'h0;
@@ -26,9 +26,7 @@ module ahb_spi
     reg         ss_flag;
     reg         start_flag;
     wire        ready_flag;
-    
-    assign SPI_SS = ss_flag;
-    
+        
     spi_master_driver spi(
         .clk_i(HCLK),
         .rst_i(~HRESETn),
@@ -84,6 +82,7 @@ module ahb_spi
     
     // Bus interface logic, data for read operation
     always @(*) begin
+        SPI_SS = ss_flag;
         case (reg_addr)
             READY_REG_ADDR: HRDATA = ~ready_flag;
             DATA_REG_ADDR:  HRDATA = data_buf_r;
