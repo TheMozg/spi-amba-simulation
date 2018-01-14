@@ -50,6 +50,9 @@ module mfp_ahb_lite_matrix
     wire [31:0] HRDATA_0 , HRDATA_1 , HRDATA_2 , HRDATA_3 , HRDATA_4 ;
     wire        HRESP_0  , HRESP_1  , HRESP_2  , HRESP_3  , HRESP_4 ;
 
+    assign HREADY_4 = 1'b1;
+    assign HRESP_4  = 1'b0;
+
     mfp_ahb_ram_slave
     # (
         .ADDR_WIDTH ( `MFP_RESET_RAM_ADDR_WIDTH )

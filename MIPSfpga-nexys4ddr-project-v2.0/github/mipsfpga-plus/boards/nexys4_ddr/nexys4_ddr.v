@@ -35,14 +35,10 @@ module nexys4_ddr
 
     inout  [12:1] JA,
     inout  [12:1] JB,
+    inout  [12:1] JC,
 
     input         UART_TXD_IN,
-    output        UART_RXD_OUT,
-    
-    input         SPI_MISO_IN,
-    output        SPI_MOSI_OUT,
-    output        SPI_SCLK_OUT,
-    output        SPI_SS_OUT
+    output        UART_RXD_OUT
 );
 
     wire clk;
@@ -133,10 +129,10 @@ module nexys4_ddr
         .UART_RX          ( UART_TXD_IN /* Alternative: JA [10] */ ),
         .UART_TX          ( UART_RXD_OUT     ),
         
-        .SPI_MISO         ( SPI_MISO_IN      ),
-        .SPI_MOSI         ( SPI_MOSI_OUT     ),
-        .SPI_SCLK         ( SPI_SCLK_OUT     ),
-        .SPI_SS           ( SPI_SS_OUT       ),
+        .SPI_MISO         (   JC [ 3]       ),
+        .SPI_MOSI         (   JC [ 2]       ),
+        .SPI_SCLK         (   JC [ 4]       ),
+        .SPI_SS           (   JC [ 1]       ),
 
         .SPI_CS           (   JA [ 1]       ),
         .SPI_SCK          (   JA [ 4]       ),
